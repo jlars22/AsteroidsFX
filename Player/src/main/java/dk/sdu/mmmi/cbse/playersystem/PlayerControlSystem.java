@@ -17,48 +17,56 @@ public class PlayerControlSystem implements IEntityProcessingService {
 
     @Override
     public void process(GameData gameData, World world) {
-            
+
         for (Entity player : world.getEntities(Player.class)) {
+            double acceleration = 0;
+            double deceleration = 0.995;
+
             if (gameData.getKeys().isDown(GameKeys.LEFT)) {
-                player.setRotation(player.getRotation() - 5);                
+                player.setRotation(player.getRotation() - 2);
             }
             if (gameData.getKeys().isDown(GameKeys.RIGHT)) {
-                player.setRotation(player.getRotation() + 5);                
+                player.setRotation(player.getRotation() + 2);
             }
             if (gameData.getKeys().isDown(GameKeys.UP)) {
-                double changeX = Math.cos(Math.toRadians(player.getRotation()));
-                double changeY = Math.sin(Math.toRadians(player.getRotation()));
-                player.setX(player.getX() + changeX);
-                player.setY(player.getY() + changeY);
+                acceleration = 0.015;
             }
             if (gameData.getKeys().isPressed(GameKeys.SPACE)) {
                 for (BulletSPI bulletSPI : getBulletSPIs()) {
                     Entity bullet = bulletSPI.createBullet(player, gameData);
-                    System.out.println("Created bullet" + bullet.getPolygonCoordinates());
                     world.addEntity(bullet);
-                    break;
                 }
             }
-            
-        if (player.getX() < 0) {
-            player.setX(1);
-        }
 
-        if (player.getX() > gameData.getDisplayWidth()) {
-            player.setX(gameData.getDisplayWidth()-1);
-        }
+            double changeX = Math.cos(Math.toRadians(player.getRotation())) * acceleration;
+            double changeY = Math.sin(Math.toRadians(player.getRotation())) * acceleration;
 
-        if (player.getY() < 0) {
-            player.setY(1);
-        }
+            player.setX(player.getX() + player.getDX() + changeX);
+            player.setY(player.getY() + player.getDY() + changeY);
 
-        if (player.getY() > gameData.getDisplayHeight()) {
-            player.setY(gameData.getDisplayHeight()-1);
-        }
-            
-                                        
+            player.setDX((player.getDX() + changeX) * deceleration);
+            player.setDY((player.getDY() + changeY) * deceleration);
+
+
+
+            if (player.getX() < 0) {
+                player.setX(gameData.getDisplayWidth());
+            }
+
+            if (player.getX() > gameData.getDisplayWidth()) {
+                player.setX(0);
+            }
+
+            if (player.getY() < 0) {
+                player.setY(gameData.getDisplayHeight());
+            }
+
+            if (player.getY() > gameData.getDisplayHeight()) {
+                player.setY(0);
+            }
         }
     }
+
 
     private Collection<? extends BulletSPI> getBulletSPIs() {
         return ServiceLoader.load(BulletSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());

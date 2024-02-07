@@ -5,37 +5,41 @@ import java.util.UUID;
 
 public class Entity implements Serializable {
 
+    public enum EntityType {
+        PLAYER, ENEMY, BULLET
+    }
+
     private final UUID ID = UUID.randomUUID();
-    
+
     private double[] polygonCoordinates;
     private double x;
     private double y;
+    private double dx;
+    private double dy;
     private double rotation;
-            
+    private EntityType entityType;
+    private String color;
 
     public String getID() {
         return ID.toString();
     }
 
-
-    public void setPolygonCoordinates(double... coordinates ) {
+    public void setPolygonCoordinates(double... coordinates) {
         this.polygonCoordinates = coordinates;
     }
 
     public double[] getPolygonCoordinates() {
         return polygonCoordinates;
     }
-       
 
     public void setX(double x) {
-        this.x =x;
+        this.x = x;
     }
 
     public double getX() {
         return x;
     }
 
-    
     public void setY(double y) {
         this.y = y;
     }
@@ -51,6 +55,39 @@ public class Entity implements Serializable {
     public double getRotation() {
         return rotation;
     }
-        
 
+    public double getDX() {
+        return dx;
+    }
+
+    public void setDX(double dx) {
+        this.dx = dx;
+    }
+
+    public double getDY() {
+        return dy;
+    }
+
+    public void setDY(double dy) {
+        this.dy = dy;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public EntityType getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(EntityType entityType) {
+        this.entityType = entityType;
+    }
 }
+
+
+

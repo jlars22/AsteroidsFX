@@ -30,3 +30,8 @@ replay_pid*
 /Bullet/target/
 /CommonBullet/target/
 /.idea/
+
+### macOS ###
+.DS_Store
+.AppleDouble
+.LSOverride
