@@ -14,6 +14,7 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI 
     @Override
     public void process(GameData gameData, World world) {
 
+        // TODO: Set max range for bullet and make them continue through the boundaries until max range is reached
         for (Entity bullet : world.getEntities(Bullet.class)) {
             if (bullet.getX() > gameData.getDisplayWidth() + 10) {
                 world.removeEntity(bullet);
@@ -34,15 +35,25 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI 
     @Override
     public Entity createBullet(Entity shooter, GameData gameData) {
         Entity bullet = new Bullet();
-        setStyleAndCoordinates(bullet, shooter);
+        setStyle(bullet);
+        bullet.setRotation(shooter.getRotation());
+        bullet.setX(shooter.getX());
+        bullet.setY(shooter.getY());
         return bullet;
     }
 
-    private void setStyleAndCoordinates(Entity entity, Entity shooter) {
+    @Override
+    public Entity createBulletRandomDirection(Entity shooter, GameData gameData) {
+        Entity bullet = new Bullet();
+        setStyle(bullet);
+        bullet.setRotation(Math.random() * 360);
+        bullet.setX(shooter.getX());
+        bullet.setY(shooter.getY());
+        return bullet;
+    }
+
+    private void setStyle(Entity entity) {
         entity.setPolygonCoordinates(2, 0, 1, 1, 1, 2, 2, 3, 3, 3, 4, 2, 4, 1, 3, 0);
-        entity.setRotation(shooter.getRotation());
-        entity.setX(shooter.getX());
-        entity.setY(shooter.getY());
         entity.setColor("YELLOW");
     }
 

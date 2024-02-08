@@ -83,13 +83,7 @@ public class Main extends Application {
         for (Entity entity : world.getEntities()) {
             Polygon polygon = new Polygon(entity.getPolygonCoordinates());
             polygons.put(entity, polygon);
-
-            if (entity.getEntityType() == Entity.EntityType.PLAYER) {
-                polygon.setStroke(Color.valueOf(entity.getColor()));
-                polygon.setStrokeWidth(2);
-            }
-
-
+            setPolygonStylingByEntityType(entity, polygon);
             gameWindow.getChildren().add(polygon);
         }
 
@@ -127,13 +121,11 @@ public class Main extends Application {
     }
 
     private void draw() {
-        // Fix
+        
         for (Entity entity : world.getEntities()) {
             if (!polygons.containsKey(entity)) {
                 Polygon polygon = new Polygon(entity.getPolygonCoordinates());
-                if (entity.getEntityType() == Entity.EntityType.BULLET) {
-                    polygon.setFill(Color.valueOf(entity.getColor()));
-                }
+                setPolygonStylingByEntityType(entity, polygon);
                 polygons.put(entity, polygon);
                 gameWindow.getChildren().add(polygon);
             }
@@ -152,6 +144,25 @@ public class Main extends Application {
                 polygons.remove(key);
             }
         });
+    }
+
+    private void setPolygonStylingByEntityType(Entity entity, Polygon polygon) {
+        switch (entity.getEntityType()) {
+            case BULLET:
+                polygon.setFill(Color.valueOf(entity.getColor()));
+                break;
+            case ENEMY:
+                polygon.setStroke(Color.valueOf(entity.getColor()));
+                polygon.setStrokeWidth(2);
+                polygon.setScaleX(2);
+                polygon.setScaleY(2);
+                polygon.setScaleZ(2);
+                break;
+            case PLAYER:
+                polygon.setStroke(Color.valueOf(entity.getColor()));
+                polygon.setStrokeWidth(2);
+                break;
+        }
     }
 
     private Collection<? extends IGamePluginService> getPluginServices() {
