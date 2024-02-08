@@ -8,9 +8,12 @@ public class Enemy extends Entity {
 
     private LocalTime lastTimeSpawned;
     private LocalTime lastTimeFired;
+    private LocalTime lastTimeChangedDirection;
 
     public Enemy() {
         this.setEntityType(EntityType.ENEMY);
+        this.setPolygonCoordinates(0, -10, -7, -3, -7, 3, 0, 10, 7, 3, 7, -3);
+        this.setColor("RED");
     }
 
     public LocalTime getLastTimeSpawned() {
@@ -27,5 +30,13 @@ public class Enemy extends Entity {
 
     public void setLastTimeFired(LocalTime lastTimeFired) {
         this.lastTimeFired = lastTimeFired;
+    }
+
+    public LocalTime getLastTimeChangedDirection() {
+        return lastTimeChangedDirection;
+    }
+
+    public void setLastTimeChangedDirection(LocalTime lastTimeChangedDirection) {
+        this.lastTimeChangedDirection = lastTimeChangedDirection;
     }
 }

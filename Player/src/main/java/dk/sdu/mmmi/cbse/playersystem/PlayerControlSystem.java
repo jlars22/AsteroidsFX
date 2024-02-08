@@ -71,10 +71,11 @@ public class PlayerControlSystem implements IEntityProcessingService {
     }
 
     private void fireBullet(GameData gameData, World world, Entity player) {
-        for (BulletSPI bulletSPI : getBulletSPIs()) {
-            Entity bullet = bulletSPI.createBullet(player, gameData);
-            world.addEntity(bullet);
-        }
+        getBulletSPIs().stream().findFirst().ifPresent(
+                spi -> {
+                    world.addEntity(spi.createBullet(player, gameData));
+                }
+        );
     }
 
     private Collection<? extends BulletSPI> getBulletSPIs() {

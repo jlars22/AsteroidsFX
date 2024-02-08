@@ -9,33 +9,34 @@ import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 
 public class BulletControlSystem implements IEntityProcessingService, BulletSPI {
 
-    private final int BULLET_SPEED = 3;
-
     @Override
     public void process(GameData gameData, World world) {
+        for (Entity entity : world.getEntities(Bullet.class)) {
+            Bullet bullet = (Bullet) entity;
+            handleTravel(world, bullet);
+            handleBorders(gameData, bullet);
+        }
+    }
 
-        // TODO: Set max range for bullet and make them continue through the boundaries until max range is reached
-        for (Entity bullet : world.getEntities(Bullet.class)) {
-            if (bullet.getX() > gameData.getDisplayWidth() + 10) {
-                world.removeEntity(bullet);
-            }
+    private void handleTravel(World world, Bullet bullet) {
+        int BULLET_SPEED = 3;
+        double changeX = Math.cos(Math.toRadians(bullet.getRotation())) * BULLET_SPEED;
+        double changeY = Math.sin(Math.toRadians(bullet.getRotation())) * BULLET_SPEED;
 
-            if (bullet.getY() > gameData.getDisplayHeight() + 10) {
-                world.removeEntity(bullet);
-            }
+        bullet.setX(bullet.getX() + changeX);
+        bullet.setY(bullet.getY() + changeY);
 
-            double changeX = Math.cos(Math.toRadians(bullet.getRotation())) * BULLET_SPEED;
-            double changeY = Math.sin(Math.toRadians(bullet.getRotation())) * BULLET_SPEED;
-            bullet.setX(bullet.getX() + changeX);
-            bullet.setY(bullet.getY() + changeY);
+        double distanceTravelled = bullet.getDistanceTravelled() + Math.hypot(changeX, changeY);
+        bullet.setDistanceTravelled(distanceTravelled);
 
+        if (distanceTravelled > bullet.getMaxTravelDistance()) {
+            world.removeEntity(bullet);
         }
     }
 
     @Override
     public Entity createBullet(Entity shooter, GameData gameData) {
         Entity bullet = new Bullet();
-        setStyle(bullet);
         bullet.setRotation(shooter.getRotation());
         bullet.setX(shooter.getX());
         bullet.setY(shooter.getY());
@@ -45,16 +46,24 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI 
     @Override
     public Entity createBulletRandomDirection(Entity shooter, GameData gameData) {
         Entity bullet = new Bullet();
-        setStyle(bullet);
         bullet.setRotation(Math.random() * 360);
         bullet.setX(shooter.getX());
         bullet.setY(shooter.getY());
         return bullet;
     }
 
-    private void setStyle(Entity entity) {
-        entity.setPolygonCoordinates(2, 0, 1, 1, 1, 2, 2, 3, 3, 3, 4, 2, 4, 1, 3, 0);
-        entity.setColor("YELLOW");
+    private void handleBorders(GameData gameData, Bullet bullet) {
+        if (bullet.getX() < 0) {
+            bullet.setX(gameData.getDisplayWidth());
+        } else if (bullet.getX() > gameData.getDisplayWidth()) {
+            bullet.setX(0);
+        }
+
+        if (bullet.getY() < 0) {
+            bullet.setY(gameData.getDisplayHeight());
+        } else if (bullet.getY() > gameData.getDisplayHeight()) {
+            bullet.setY(0);
+        }
     }
 
 }

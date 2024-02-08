@@ -19,98 +19,109 @@ public class EnemyControlSystem implements IEntityProcessingService {
     @Override
     public void process(GameData gameData, World world) {
         if (shouldCreateNewEnemy(world)) {
-            Entity enemyShip = createEnemyShip(gameData);
-            world.addEntity(enemyShip);
+            world.addEntity(createEnemyShip(gameData));
         }
 
-        for (Entity enemy : world.getEntities(Enemy.class)) {
+        for (Entity entity : world.getEntities(Enemy.class)) {
+            Enemy enemy = (Enemy) entity;
             startFiring(gameData, world, enemy);
-            startMovement(gameData, enemy);
+            startMovement(enemy);
             handleBorders(gameData, enemy);
         }
     }
 
     private boolean shouldCreateNewEnemy(World world) {
+        // TODO: Make these spawns randomly and not just after all enemies are dead
         return world.getEntities(Enemy.class).isEmpty();
     }
 
-    private void handleBorders(GameData gameData, Entity entity) {
-        if (entity.getX() < 0) {
-            entity.setX(gameData.getDisplayWidth());
-        } else if (entity.getX() > gameData.getDisplayWidth()) {
-            entity.setX(0);
+    private void handleBorders(GameData gameData, Enemy enemy) {
+        if (enemy.getX() < 0) {
+            enemy.setX(gameData.getDisplayWidth());
+        } else if (enemy.getX() > gameData.getDisplayWidth()) {
+            enemy.setX(0);
         }
 
-        if (entity.getY() < 0) {
-            entity.setY(gameData.getDisplayHeight());
-        } else if (entity.getY() > gameData.getDisplayHeight()) {
-            entity.setY(0);
+        if (enemy.getY() < 0) {
+            enemy.setY(gameData.getDisplayHeight());
+        } else if (enemy.getY() > gameData.getDisplayHeight()) {
+            enemy.setY(0);
         }
     }
 
-    private void startMovement(GameData gameData, Entity enemy) {
-        double speed = 0.8;
+    private void startMovement(Enemy enemy) {
+        double speed = 0.7;
 
+        // If the enemy is not moving, set a random direction
         if (enemy.getDX() == 0 && enemy.getDY() == 0) {
-            double direction = random.nextDouble() * 2 * Math.PI;
+            double direction = random.nextDouble(2 * Math.PI);
             enemy.setDX(Math.cos(direction) * speed);
             enemy.setDY(Math.sin(direction) * speed);
         }
 
-        if (random.nextInt(100) < 1) { // Decide if the enemy should change direction
-            double direction = random.nextDouble() * 2 * Math.PI;
-            enemy.setDX(Math.cos(direction) * speed);
-            enemy.setDY(Math.sin(direction) * speed);
+        if (shouldChangeDirection(enemy)) {
+            double currentDirection = Math.atan2(enemy.getDY(), enemy.getDX());
+            double adjustment = Math.toRadians(random.nextInt(-45, 45));
+            double newDirection = currentDirection + adjustment;
+
+            enemy.setDX(Math.cos(newDirection) * speed);
+            enemy.setDY(Math.sin(newDirection) * speed);
+
         }
+
 
         enemy.setX(enemy.getX() + enemy.getDX());
         enemy.setY(enemy.getY() + enemy.getDY());
     }
 
-    private void startFiring(GameData gameData, World world, Entity enemy) {
+    private boolean shouldChangeDirection(Enemy enemy) {
         LocalTime currentTime = LocalTime.now();
-        LocalTime lastTimeFired = ((Enemy) enemy).getLastTimeFired();
+        LocalTime lastTimeChangedDirection = enemy.getLastTimeChangedDirection();
+
+        if (lastTimeChangedDirection != null && !currentTime.isAfter(lastTimeChangedDirection.plusSeconds(3))) {
+            return false;
+        }
+
+        enemy.setLastTimeChangedDirection(currentTime);
+        return true;
+    }
+
+
+    private void startFiring(GameData gameData, World world, Enemy enemy) {
+        LocalTime currentTime = LocalTime.now();
+        LocalTime lastTimeFired = enemy.getLastTimeFired();
 
         if (lastTimeFired == null || currentTime.isAfter(lastTimeFired.plusSeconds(3))) {
-            for (BulletSPI bulletSPI : getBulletSPIs()) {
-                Entity bullet = bulletSPI.createBulletRandomDirection(enemy, gameData);
-                world.addEntity(bullet);
-            }
-            ((Enemy) enemy).setLastTimeFired(currentTime);
+            getBulletSPIs().stream().findFirst().ifPresent(spi -> world.addEntity(spi.createBulletRandomDirection(enemy, gameData)));
+            enemy.setLastTimeFired(currentTime);
         }
     }
 
-    private Entity createEnemyShip(GameData gameData) {
-        Entity enemyShip = new Enemy();
-        setStyle(enemyShip);
+    private Enemy createEnemyShip(GameData gameData) {
+        Enemy enemyShip = new Enemy();
         setRandomPosition(gameData, enemyShip);
         return enemyShip;
     }
 
-    private void setRandomPosition(GameData gameData, Entity entity) {
+    private void setRandomPosition(GameData gameData, Enemy eneemy) {
         switch (random.nextInt(4)) {
             case 0:
-                entity.setX(0);
-                entity.setY(random.nextInt(gameData.getDisplayHeight()));
+                eneemy.setX(0);
+                eneemy.setY(random.nextInt(gameData.getDisplayHeight()));
                 break;
             case 1:
-                entity.setX(gameData.getDisplayWidth());
-                entity.setY(random.nextInt(gameData.getDisplayHeight()));
+                eneemy.setX(gameData.getDisplayWidth());
+                eneemy.setY(random.nextInt(gameData.getDisplayHeight()));
                 break;
             case 2:
-                entity.setX(random.nextInt(gameData.getDisplayWidth()));
-                entity.setY(0);
+                eneemy.setX(random.nextInt(gameData.getDisplayWidth()));
+                eneemy.setY(0);
                 break;
             case 3:
-                entity.setX(random.nextInt(gameData.getDisplayWidth()));
-                entity.setY(gameData.getDisplayHeight());
+                eneemy.setX(random.nextInt(gameData.getDisplayWidth()));
+                eneemy.setY(gameData.getDisplayHeight());
                 break;
         }
-    }
-
-    private void setStyle(Entity entity) {
-        entity.setPolygonCoordinates(0, -10, -7, -3, -7, 3, 0, 10, 7, 3, 7, -3);
-        entity.setColor("RED");
     }
 
     private Collection<? extends BulletSPI> getBulletSPIs() {
