@@ -14,6 +14,7 @@ public class Enemy extends Entity {
         this.setEntityType(EntityType.ENEMY);
         this.setPolygonCoordinates(0, -10, -7, -3, -7, 3, 0, 10, 7, 3, 7, -3);
         this.setColor("RED");
+        this.setHealth(1);
     }
 
     public LocalTime getLastTimeSpawned() {

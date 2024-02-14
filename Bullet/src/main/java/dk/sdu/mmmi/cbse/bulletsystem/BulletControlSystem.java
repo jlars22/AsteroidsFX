@@ -18,6 +18,16 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI 
         }
     }
 
+    /**
+     * Manages bullet movement in the game world
+     *
+     * <p>Calculates the new position of the bullet using trigonometry based on its rotation and a constant speed
+     * Also tracks the total distance the bullet has travelled using the Pythagorean theorem
+     * If the bullet exceeds its maximum travel distance, it is removed from the game world
+     *
+     * @param world  The game world.
+     * @param bullet The bullet entity.
+     */
     private void handleTravel(World world, Bullet bullet) {
         int BULLET_SPEED = 3;
         double changeX = Math.cos(Math.toRadians(bullet.getRotation())) * BULLET_SPEED;
@@ -36,19 +46,21 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI 
 
     @Override
     public Entity createBullet(Entity shooter, GameData gameData) {
-        Entity bullet = new Bullet();
+        Bullet bullet = new Bullet();
         bullet.setRotation(shooter.getRotation());
         bullet.setX(shooter.getX());
         bullet.setY(shooter.getY());
+        bullet.setOwner(shooter);
         return bullet;
     }
 
     @Override
     public Entity createBulletRandomDirection(Entity shooter, GameData gameData) {
-        Entity bullet = new Bullet();
+        Bullet bullet = new Bullet();
         bullet.setRotation(Math.random() * 360);
         bullet.setX(shooter.getX());
         bullet.setY(shooter.getY());
+        bullet.setOwner(shooter);
         return bullet;
     }
 

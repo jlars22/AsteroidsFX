@@ -12,11 +12,14 @@ public class Entity implements Serializable {
     private final UUID ID = UUID.randomUUID();
 
     private double[] polygonCoordinates;
+    private double width;
+    private double height;
     private double x;
     private double y;
     private double dx;
     private double dy;
     private double rotation;
+    private int health;
     private EntityType entityType;
     private String color;
 
@@ -86,6 +89,30 @@ public class Entity implements Serializable {
 
     public void setEntityType(EntityType entityType) {
         this.entityType = entityType;
+    }
+
+    public double getWidth() {
+        return width;
+    }
+
+    public void setWidth(double width) {
+        this.width = width;
+    }
+
+    public double getHeight() {
+        return height;
+    }
+
+    public void setHeight(double height) {
+        this.height = height;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
     }
 }
 

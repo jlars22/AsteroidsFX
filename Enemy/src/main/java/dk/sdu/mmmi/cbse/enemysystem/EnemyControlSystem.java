@@ -60,19 +60,31 @@ public class EnemyControlSystem implements IEntityProcessingService {
         }
 
         if (shouldChangeDirection(enemy)) {
-            double currentDirection = Math.atan2(enemy.getDY(), enemy.getDX());
-            double adjustment = Math.toRadians(random.nextInt(-45, 45));
-            double newDirection = currentDirection + adjustment;
+            double newDirection = getNewDirection(enemy);
 
             enemy.setDX(Math.cos(newDirection) * speed);
             enemy.setDY(Math.sin(newDirection) * speed);
-
         }
 
 
         enemy.setX(enemy.getX() + enemy.getDX());
         enemy.setY(enemy.getY() + enemy.getDY());
     }
+
+    /**
+     * Calculates a new direction for the enemy based on its current velocity components
+     *
+     * <p>atan2 is used to determine the current direction of the enemy, and a random adjustment angle is added to it
+     *
+     * @param enemy The enemy object for which the new direction is calculated
+     * @return The new direction in radians, adjusted by a random angle within the range of -45 to 45 degrees
+     */
+    private double getNewDirection(Enemy enemy) {
+        double currentDirection = Math.atan2(enemy.getDY(), enemy.getDX());
+        double adjustment = Math.toRadians(random.nextInt(-45, 45));
+        return currentDirection + adjustment;
+    }
+
 
     private boolean shouldChangeDirection(Enemy enemy) {
         LocalTime currentTime = LocalTime.now();

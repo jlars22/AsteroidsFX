@@ -44,6 +44,30 @@ public class Main extends Application {
         gameWindow.setPrefSize(gameData.getDisplayWidth(), gameData.getDisplayHeight());
         gameWindow.getChildren().add(text);
 
+        Scene scene = getScene();
+
+        // Lookup all Game Plugins using ServiceLoader
+        for (IGamePluginService iGamePlugin : getPluginServices()) {
+            iGamePlugin.start(gameData, world);
+        }
+        
+        for (Entity entity : world.getEntities()) {
+            Polygon polygon = new Polygon(entity.getPolygonCoordinates());
+            setPolygonStylingByEntityType(entity, polygon);
+            setEntityWidthAndHeightByPolygon(entity, polygon);
+            polygons.put(entity, polygon);
+            gameWindow.getChildren().add(polygon);
+        }
+
+        render();
+
+        window.setScene(scene);
+        window.setTitle("ASTEROIDS");
+        window.show();
+
+    }
+
+    private Scene getScene() {
         Scene scene = new Scene(gameWindow);
         scene.setFill(Color.BLACK);
         scene.setOnKeyPressed(event -> {
@@ -73,26 +97,8 @@ public class Main extends Application {
             if (event.getCode().equals(KeyCode.SPACE)) {
                 gameData.getKeys().setKey(GameKeys.SPACE, false);
             }
-
         });
-
-        // Lookup all Game Plugins using ServiceLoader
-        for (IGamePluginService iGamePlugin : getPluginServices()) {
-            iGamePlugin.start(gameData, world);
-        }
-        for (Entity entity : world.getEntities()) {
-            Polygon polygon = new Polygon(entity.getPolygonCoordinates());
-            polygons.put(entity, polygon);
-            setPolygonStylingByEntityType(entity, polygon);
-            gameWindow.getChildren().add(polygon);
-        }
-
-        render();
-
-        window.setScene(scene);
-        window.setTitle("ASTEROIDS");
-        window.show();
-
+        return scene;
     }
 
     private void render() {
@@ -115,9 +121,9 @@ public class Main extends Application {
         for (IEntityProcessingService entityProcessorService : getEntityProcessingServices()) {
             entityProcessorService.process(gameData, world);
         }
-//        for (IPostEntityProcessingService postEntityProcessorService : getPostEntityProcessingServices()) {
-//            postEntityProcessorService.process(gameData, world);
-//        }
+        for (IPostEntityProcessingService postEntityProcessorService : getPostEntityProcessingServices()) {
+            postEntityProcessorService.process(gameData, world);
+        }
     }
 
     private void draw() {
@@ -126,6 +132,7 @@ public class Main extends Application {
             if (!polygons.containsKey(entity)) {
                 Polygon polygon = new Polygon(entity.getPolygonCoordinates());
                 setPolygonStylingByEntityType(entity, polygon);
+                setEntityWidthAndHeightByPolygon(entity, polygon);
                 polygons.put(entity, polygon);
                 gameWindow.getChildren().add(polygon);
             }
@@ -144,6 +151,11 @@ public class Main extends Application {
                 polygons.remove(key);
             }
         });
+    }
+
+    private void setEntityWidthAndHeightByPolygon(Entity entity, Polygon polygon) {
+        entity.setWidth(polygon.getBoundsInLocal().getWidth());
+        entity.setHeight(polygon.getBoundsInLocal().getHeight());
     }
 
     private void setPolygonStylingByEntityType(Entity entity, Polygon polygon) {

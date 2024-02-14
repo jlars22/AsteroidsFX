@@ -4,7 +4,6 @@ import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 
 /**
- * @author jcs
  * The `IPostEntityProcessingService` interface is used to describe the post-processing logic for all types of entities.
  * <p>
  * Implementations of this interface have to implement the `process` method,
