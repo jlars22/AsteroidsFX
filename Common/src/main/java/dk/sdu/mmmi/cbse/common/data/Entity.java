@@ -6,117 +6,123 @@ import java.util.UUID;
 
 public class Entity implements Serializable {
 
-    // Maybe remove this enum and use the class name instead?
-    public enum EntityType {
-        PLAYER, ENEMY, BULLET, ASTEROID
-    }
+	// Maybe remove this enum and use the class name instead?
+	public enum EntityType {
+		PLAYER, ENEMY, BULLET, ASTEROID
+	}
 
-    private final UUID ID = UUID.randomUUID();
+	private final UUID ID = UUID.randomUUID();
 
-    private double[] polygonCoordinates;
-    private double width;
-    private double height;
-    private double x;
-    private double y;
-    private double dx;
-    private double dy;
-    private double rotation;
-    private int health;
-    private EntityType entityType;
-    private String color;
+	private double[] polygonCoordinates;
+	private double width;
+	private double height;
+	private double x;
+	private double y;
+	private double dx;
+	private double dy;
+	private double rotation;
+	private int health;
+	private EntityType entityType;
+	private String color;
+	private LocalTime respawnTime;
 
-    public String getID() {
-        return ID.toString();
-    }
+	public String getID() {
+		return ID.toString();
+	}
 
-    public void setPolygonCoordinates(double... coordinates) {
-        this.polygonCoordinates = coordinates;
-    }
+	public void setPolygonCoordinates(double... coordinates) {
+		this.polygonCoordinates = coordinates;
+	}
 
-    public double[] getPolygonCoordinates() {
-        return polygonCoordinates;
-    }
+	public double[] getPolygonCoordinates() {
+		return polygonCoordinates;
+	}
 
-    public void setX(double x) {
-        this.x = x;
-    }
+	public void setX(double x) {
+		this.x = x;
+	}
 
-    public double getX() {
-        return x;
-    }
+	public double getX() {
+		return x;
+	}
 
-    public void setY(double y) {
-        this.y = y;
-    }
+	public void setY(double y) {
+		this.y = y;
+	}
 
-    public double getY() {
-        return y;
-    }
+	public double getY() {
+		return y;
+	}
 
-    public void setRotation(double rotation) {
-        this.rotation = rotation;
-    }
+	public void setRotation(double rotation) {
+		this.rotation = rotation;
+	}
 
-    public double getRotation() {
-        return rotation;
-    }
+	public double getRotation() {
+		return rotation;
+	}
 
-    public double getDX() {
-        return dx;
-    }
+	public double getDX() {
+		return dx;
+	}
 
-    public void setDX(double dx) {
-        this.dx = dx;
-    }
+	public void setDX(double dx) {
+		this.dx = dx;
+	}
 
-    public double getDY() {
-        return dy;
-    }
+	public double getDY() {
+		return dy;
+	}
 
-    public void setDY(double dy) {
-        this.dy = dy;
-    }
+	public void setDY(double dy) {
+		this.dy = dy;
+	}
 
-    public String getColor() {
-        return color;
-    }
+	public String getColor() {
+		return color;
+	}
 
-    public void setColor(String color) {
-        this.color = color;
-    }
+	public void setColor(String color) {
+		this.color = color;
+	}
 
-    public EntityType getEntityType() {
-        return entityType;
-    }
+	public EntityType getEntityType() {
+		return entityType;
+	}
 
-    public void setEntityType(EntityType entityType) {
-        this.entityType = entityType;
-    }
+	public void setEntityType(EntityType entityType) {
+		this.entityType = entityType;
+	}
 
-    public double getWidth() {
-        return width;
-    }
+	public double getWidth() {
+		return width;
+	}
 
-    public void setWidth(double width) {
-        this.width = width;
-    }
+	public void setWidth(double width) {
+		this.width = width;
+	}
 
-    public double getHeight() {
-        return height;
-    }
+	public double getHeight() {
+		return height;
+	}
 
-    public void setHeight(double height) {
-        this.height = height;
-    }
+	public void setHeight(double height) {
+		this.height = height;
+	}
 
-    public int getHealth() {
-        return health;
-    }
+	public int getHealth() {
+		return health;
+	}
 
-    public void setHealth(int health) {
-        this.health = health;
-    }
+	public void setHealth(int health) {
+		this.health = health;
+	}
+
+	public LocalTime getRespawnTime() {
+		return respawnTime;
+	}
+
+	public void setRespawnTime(LocalTime respawnTime) {
+		this.respawnTime = respawnTime;
+	}
 }
-
-
-
