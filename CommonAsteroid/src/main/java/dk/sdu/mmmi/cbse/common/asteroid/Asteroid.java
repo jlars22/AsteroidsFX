@@ -2,7 +2,6 @@ package dk.sdu.mmmi.cbse.common.asteroid;
 
 import dk.sdu.mmmi.cbse.common.data.Entity;
 
-// In Asteroid.java
 public class Asteroid extends Entity {
 	private int size; // 1: small, 2: medium, 3: large
 

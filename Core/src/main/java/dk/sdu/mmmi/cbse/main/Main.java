@@ -20,6 +20,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -29,6 +30,7 @@ public class Main extends Application {
 	private final World world = new World();
 	private final Map<Entity, Polygon> polygons = new ConcurrentHashMap<>();
 	private final Pane gameWindow = new Pane();
+	private Text text;
 
 	public static void main(String[] args) {
 		launch(Main.class);
@@ -37,7 +39,9 @@ public class Main extends Application {
 	@Override
 	public void start(Stage window) throws Exception {
 		window.setResizable(false);
-		Text text = new Text(10, 20, "Destroyed asteroids: 0");
+		text = new Text(10, 20, "");
+		text.setFill(Color.RED);
+		text.setFont(new Font(30));
 		gameWindow.setPrefSize(gameData.getDisplayWidth(), gameData.getDisplayHeight());
 		gameWindow.getChildren().add(text);
 
@@ -111,7 +115,6 @@ public class Main extends Application {
 	}
 
 	private void update() {
-
 		// Update
 		for (IEntityProcessingService entityProcessorService : getEntityProcessingServices()) {
 			entityProcessorService.process(gameData, world);
@@ -122,6 +125,8 @@ public class Main extends Application {
 	}
 
 	private void draw() {
+
+		text.setText(generateHearts(gameData.getPlayer().getHealth()));
 
 		for (Entity entity : world.getEntities()) {
 			if (!polygons.containsKey(entity)) {
@@ -167,6 +172,10 @@ public class Main extends Application {
 				polygon.setStrokeWidth(2);
 				break;
 		}
+	}
+
+	private String generateHearts(int health) {
+		return "❤ ".repeat(Math.max(0, health));
 	}
 
 	private Collection<? extends IGamePluginService> getPluginServices() {
