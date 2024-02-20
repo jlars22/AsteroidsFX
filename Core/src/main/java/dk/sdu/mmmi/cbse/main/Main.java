@@ -20,6 +20,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -39,9 +40,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage window) throws Exception {
 		window.setResizable(false);
-		text = new Text(10, 20, "");
-		text.setFill(Color.RED);
-		text.setFont(new Font(30));
+		generatePlayerHealthText();
 		gameWindow.setPrefSize(gameData.getDisplayWidth(), gameData.getDisplayHeight());
 		gameWindow.getChildren().add(text);
 
@@ -126,8 +125,6 @@ public class Main extends Application {
 
 	private void draw() {
 
-		text.setText(generateHearts(gameData.getPlayer().getHealth()));
-
 		for (Entity entity : world.getEntities()) {
 			if (!polygons.containsKey(entity)) {
 				Polygon polygon = new Polygon(entity.getPolygonCoordinates());
@@ -151,6 +148,17 @@ public class Main extends Application {
 				polygons.remove(key);
 			}
 		});
+
+		text.setText(generateHearts(gameData.getPlayer().getHealth()));
+		text.toFront();
+	}
+
+	private void generatePlayerHealthText() {
+		text = new Text(10, 20, "");
+		text.setFont(new Font(30));
+		text.setStroke(Color.WHITE);
+		text.setStrokeWidth(1);
+		text.setStrokeType(StrokeType.OUTSIDE);
 	}
 
 	private void setEntityWidthAndHeightByPolygon(Entity entity, Polygon polygon) {
@@ -164,6 +172,10 @@ public class Main extends Application {
 				polygon.setFill(Color.valueOf(entity.getColor()));
 				break;
 			case ENEMY :
+				polygon.setStroke(Color.valueOf(entity.getColor()));
+				polygon.setScaleX(1.5);
+				polygon.setScaleY(1.5);
+				polygon.setScaleZ(1.5);
 			case ASTEROID :
 				polygon.setStroke(Color.valueOf(entity.getColor()));
 				break;

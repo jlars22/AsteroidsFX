@@ -54,7 +54,7 @@ public class PlayerControlSystem implements IEntityProcessingService {
 			player.setRotation(player.getRotation() + 2);
 		}
 		if (gameData.getKeys().isDown(GameKeys.UP)) {
-			acceleration = 0.015;
+			acceleration = 0.02;
 		}
 		if (gameData.getKeys().isPressed(GameKeys.SPACE)) {
 			fireBullet(gameData, world, player);
@@ -93,7 +93,7 @@ public class PlayerControlSystem implements IEntityProcessingService {
 
 	private void fireBullet(GameData gameData, World world, Entity player) {
 		getBulletSPIs().stream().findFirst().ifPresent(spi -> {
-			world.addEntity(spi.createBullet(player, gameData));
+			world.addEntity(spi.createBullet(player));
 		});
 	}
 

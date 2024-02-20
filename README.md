@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="https://i.pinimg.com/originals/ab/8c/37/ab8c3711ad1de1acd12d08a26be6907e.png" width="350" title="hover text">
-</p>
+![Asteroids Icon](./icon.png)
 
 ## Introduction
 This repository contains my project for the Component Based Software Engineering exam portfolio. 

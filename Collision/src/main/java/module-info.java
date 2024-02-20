@@ -2,7 +2,6 @@ import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 
 module Collision {
 	requires Common;
-	requires CommonBullet;
 	requires CommonAsteroid;
 
 	uses dk.sdu.mmmi.cbse.common.asteroid.AsteroidSPI;

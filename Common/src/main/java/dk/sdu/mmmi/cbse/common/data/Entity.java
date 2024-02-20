@@ -125,4 +125,5 @@ public class Entity implements Serializable {
 	public void setRespawnTime(LocalTime respawnTime) {
 		this.respawnTime = respawnTime;
 	}
+
 }

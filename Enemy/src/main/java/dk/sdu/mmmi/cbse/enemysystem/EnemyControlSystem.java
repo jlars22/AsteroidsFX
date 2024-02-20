@@ -3,6 +3,7 @@ package dk.sdu.mmmi.cbse.enemysystem;
 import static java.util.stream.Collectors.toList;
 
 import dk.sdu.mmmi.cbse.common.bullet.BulletSPI;
+import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
@@ -16,21 +17,32 @@ public class EnemyControlSystem implements IEntityProcessingService {
 
 	@Override
 	public void process(GameData gameData, World world) {
-		// if (shouldCreateNewEnemy(world)) {
-		// world.addEntity(createEnemyShip(gameData));
-		// }
-		//
-		// for (Entity entity : world.getEntities(Enemy.class)) {
-		// Enemy enemy = (Enemy) entity;
-		// startFiring(gameData, world, enemy);
-		// startMovement(enemy);
-		// handleBorders(gameData, enemy);
-		// }
+		handleRespawn(gameData, world);
+
+		for (Entity entity : world.getEntities(Enemy.class)) {
+			Enemy enemy = (Enemy) entity;
+			startFiring(gameData, world, enemy);
+			startMovement(enemy);
+			handleBorders(gameData, enemy);
+		}
 	}
 
-	private boolean shouldCreateNewEnemy(World world) {
-		// TODO: Make these spawns randomly and not just after all enemies are dead
-		return world.getEntities(Enemy.class).isEmpty();
+	private void handleRespawn(GameData gameData, World world) {
+		int currentEnemyCount = world.getEntities(Enemy.class).size();
+
+		double randomNumber = random.nextDouble();
+
+		double spawnThreshold;
+		if (currentEnemyCount == 0) {
+			spawnThreshold = 0.0015;
+		} else {
+			spawnThreshold = 0.002 / ((currentEnemyCount * 10));
+		}
+
+		if (randomNumber < spawnThreshold) {
+			Enemy enemy = createEnemyShip(gameData);
+			world.addEntity(enemy);
+		}
 	}
 
 	private void handleBorders(GameData gameData, Enemy enemy) {
@@ -105,7 +117,7 @@ public class EnemyControlSystem implements IEntityProcessingService {
 
 		if (lastTimeFired == null || currentTime.isAfter(lastTimeFired.plusSeconds(3))) {
 			getBulletSPIs().stream().findFirst()
-					.ifPresent(spi -> world.addEntity(spi.createBulletRandomDirection(enemy, gameData)));
+					.ifPresent(spi -> world.addEntity(spi.createBullet(enemy, Math.random() * 360)));
 			enemy.setLastTimeFired(currentTime);
 		}
 	}

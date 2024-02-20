@@ -3,7 +3,6 @@ package dk.sdu.mmmi.cbse.collisionsystem;
 import static java.util.stream.Collectors.toList;
 
 import dk.sdu.mmmi.cbse.common.asteroid.AsteroidSPI;
-import dk.sdu.mmmi.cbse.common.bullet.Bullet;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.Entity.EntityType;
 import dk.sdu.mmmi.cbse.common.data.GameData;
@@ -22,63 +21,56 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 					continue;
 				}
 				if (checkCollision(entityA, entityB)) {
-					handleCollision(entityA, entityB, world, gameData);
+					handleCollision(entityA, entityB, world);
 				}
 			}
 		}
 	}
 
-	private void handleCollision(Entity entityA, Entity entityB, World world, GameData gameData) {
-		handleEnemyCollision(entityA, entityB, world);
-		handlePlayerCollision(entityA, entityB, world, gameData);
-		handleAsteroidCollision(entityA, entityB, world);
+	private void handleCollision(Entity entityA, Entity entityB, World world) {
+		handleEntityCollision(entityA, entityB, world, EntityType.ENEMY, this::handleEnemyCollision);
+		handleEntityCollision(entityA, entityB, world, EntityType.PLAYER, this::handlePlayerCollision);
+		handleEntityCollision(entityA, entityB, world, EntityType.ASTEROID, this::handleAsteroidCollision);
 	}
 
-	private void handleEnemyCollision(Entity entityA, Entity entityB, World world) {
-		// TODO: Implement enemy collision
-	}
-
-	private void handlePlayerCollision(Entity entityA, Entity entityB, World world, GameData gameData) {
-		if (entityA.getEntityType().equals(EntityType.PLAYER) || entityB.getEntityType().equals(EntityType.PLAYER)) {
-			if (entityA.getEntityType().equals(EntityType.PLAYER)) {
-				decrementHealthOrRemoveEntity(entityA, world);
-				if (entityA.getHealth() != 0) {
-					world.removeEntity(entityA);
-				}
+	private void handleEntityCollision(Entity entityA, Entity entityB, World world, EntityType type,
+			CollisionHandler handler) {
+		if (entityA.getEntityType().equals(type) || entityB.getEntityType().equals(type)) {
+			if (entityA.getEntityType().equals(type)) {
+				handler.handle(entityA, entityB, world);
 			} else {
-				decrementHealthOrRemoveEntity(entityB, world);
-				if (entityB.getHealth() != 0) {
-					world.removeEntity(entityB);
-				}
-			}
-		}
-	}
-
-	private void handleAsteroidCollision(Entity entityA, Entity entityB, World world) {
-		if (entityA.getEntityType().equals(EntityType.ASTEROID)
-				|| entityB.getEntityType().equals(EntityType.ASTEROID)) {
-			if (entityA.getEntityType().equals(EntityType.ASTEROID)) {
-				decrementHealthOrRemoveEntity(entityA, world);
-				if (entityA.getHealth() != 0) {
-					splitAsteroid(entityA, world);
-				}
-			} else {
-				decrementHealthOrRemoveEntity(entityB, world);
-				if (entityB.getHealth() != 0) {
-					splitAsteroid(entityB, world);
-				}
+				handler.handle(entityB, entityA, world);
 			}
 			removeBullet(entityA, entityB, world);
 		}
 	}
 
+	private interface CollisionHandler {
+		void handle(Entity entityA, Entity entityB, World world);
+	}
+
+	private void handleEnemyCollision(Entity enemy, Entity otherEntity, World world) {
+		decrementHealthOrRemoveEntity(enemy, world);
+	}
+
+	private void handlePlayerCollision(Entity player, Entity otherEntity, World world) {
+		decrementHealthOrRemoveEntity(player, world);
+		if (player.getHealth() != 0) {
+			world.removeEntity(player);
+		}
+	}
+
+	private void handleAsteroidCollision(Entity asteroid, Entity otherEntity, World world) {
+		decrementHealthOrRemoveEntity(asteroid, world);
+		if (asteroid.getHealth() != 0) {
+			splitAsteroid(asteroid, world);
+		}
+	}
+
 	private void removeBullet(Entity entityA, Entity entityB, World world) {
 		if (entityA.getEntityType().equals(EntityType.BULLET) || entityB.getEntityType().equals(EntityType.BULLET)) {
-			if (entityA.getEntityType().equals(EntityType.BULLET)) {
-				world.removeEntity(entityA);
-			} else {
-				world.removeEntity(entityB);
-			}
+			Entity bullet = entityA.getEntityType().equals(EntityType.BULLET) ? entityA : entityB;
+			world.removeEntity(bullet);
 		}
 	}
 
@@ -93,8 +85,6 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 
 	private boolean checkCollision(Entity entityA, Entity entityB) {
 		if (isEntitiesSameType(entityA, entityB))
-			return false;
-		if (isBulletFromOwner(entityA, entityB))
 			return false;
 
 		double aLeft = entityA.getX();
@@ -113,14 +103,6 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 
 	private boolean isEntitiesSameType(Entity entityA, Entity entityB) {
 		return entityA.getEntityType().equals(entityB.getEntityType());
-	}
-
-	private boolean isBulletFromOwner(Entity entityA, Entity entityB) {
-		Entity bullet = entityA.getEntityType().equals(EntityType.BULLET) ? entityA : entityB;
-		Entity otherEntity = entityA.getEntityType().equals(EntityType.BULLET) ? entityB : entityA;
-
-		return bullet.getEntityType().equals(EntityType.BULLET)
-				&& ((Bullet) bullet).getOwner().getID().equals(otherEntity.getID());
 	}
 
 	private void splitAsteroid(Entity entity, World world) {
