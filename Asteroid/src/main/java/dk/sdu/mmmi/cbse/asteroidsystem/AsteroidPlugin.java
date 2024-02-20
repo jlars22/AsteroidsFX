@@ -13,13 +13,12 @@ public class AsteroidPlugin implements IGamePluginService {
 			Entity asteroid = new Asteroid(3);
 
 			// Define a buffer zone around the edges for the player not to die instantly
-			double bufferZone = 0.1; // 10% of the screen width and height
+			double bufferZone = 0.1;
 			double minX = gameData.getDisplayWidth() * bufferZone;
 			double maxX = gameData.getDisplayWidth() * (1 - bufferZone);
 			double minY = gameData.getDisplayHeight() * bufferZone;
 			double maxY = gameData.getDisplayHeight() * (1 - bufferZone);
 
-			// Generate random coordinates within the buffer zone
 			double x = Math.random() < 0.5
 					? Math.random() * minX
 					: Math.random() * (maxX - gameData.getDisplayWidth()) + gameData.getDisplayWidth();

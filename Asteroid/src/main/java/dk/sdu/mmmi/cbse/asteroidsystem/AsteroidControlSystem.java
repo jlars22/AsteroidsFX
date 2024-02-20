@@ -10,7 +10,6 @@ import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 public class AsteroidControlSystem implements IEntityProcessingService, AsteroidSPI {
 	@Override
 	public void process(GameData gameData, World world) {
-		// Make the asteroids float around in their current direction
 		for (Entity entity : world.getEntities(Asteroid.class)) {
 			Asteroid asteroid = (Asteroid) entity;
 			handleTravel(asteroid);

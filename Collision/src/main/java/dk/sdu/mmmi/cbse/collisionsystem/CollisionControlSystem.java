@@ -97,7 +97,6 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 		double bTop = entityB.getY();
 		double bBottom = entityB.getY() + entityB.getHeight();
 
-		// Check if the bounding boxes overlap
 		return aLeft < bRight && aRight > bLeft && aTop < bBottom && aBottom > bTop;
 	}
 
