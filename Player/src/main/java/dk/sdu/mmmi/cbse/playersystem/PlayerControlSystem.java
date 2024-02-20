@@ -7,6 +7,7 @@ import dk.sdu.mmmi.cbse.common.data.GameKeys;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.ServiceLoader;
 
@@ -16,12 +17,33 @@ public class PlayerControlSystem implements IEntityProcessingService {
 
     @Override
     public void process(GameData gameData, World world) {
+        handleRespawn(gameData, world);
         for (Entity player : world.getEntities(Player.class)) {
             handleInput(gameData, world, player);
             updatePosition(player);
             handleBorders(gameData, player);
         }
     }
+
+    private void handleRespawn(GameData gameData, World world) {
+    if (world.getEntities(Player.class).isEmpty()) {
+        Player player = (Player) gameData.getPlayer();
+        if (player.getHealth() == 0) {
+            System.out.println("Player is dead");
+            return;
+        }
+        if (player.getRespawnTime() == null) {
+            player.setRespawnTime(LocalTime.now());
+        } else if (LocalTime.now().isAfter(player.getRespawnTime().plusSeconds(3))) {
+            player.setX(gameData.getDisplayWidth() / 2);
+            player.setY(gameData.getDisplayHeight() / 2);
+            player.setDX(0);
+            player.setDY(0);
+            world.addEntity(gameData.getPlayer());
+            player.setRespawnTime(null);
+        }
+    }
+}
 
     private void handleInput(GameData gameData, World world, Entity player) {
         double acceleration = 0;

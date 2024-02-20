@@ -164,11 +164,8 @@ public class Main extends Application {
                 polygon.setFill(Color.valueOf(entity.getColor()));
                 break;
             case ENEMY:
+            case ASTEROID:
                 polygon.setStroke(Color.valueOf(entity.getColor()));
-                polygon.setStrokeWidth(2);
-                polygon.setScaleX(2);
-                polygon.setScaleY(2);
-                polygon.setScaleZ(2);
                 break;
             case PLAYER:
                 polygon.setStroke(Color.valueOf(entity.getColor()));

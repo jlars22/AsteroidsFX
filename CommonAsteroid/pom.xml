@@ -8,26 +8,16 @@
         <artifactId>asteroids.jpms</artifactId>
         <version>1.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>Collision</artifactId>
+    <artifactId>CommonAsteroid</artifactId>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
-            <groupId>dk.sdu.mmmi.cbse</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>Common</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>dk.sdu.mmmi.cbse</groupId>
-            <artifactId>CommonBullet</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>dk.sdu.mmmi.cbse</groupId>
-            <artifactId>CommonAsteroid</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
+
+
+
 </project>

@@ -18,16 +18,16 @@ public class EnemyControlSystem implements IEntityProcessingService {
 
     @Override
     public void process(GameData gameData, World world) {
-        if (shouldCreateNewEnemy(world)) {
-            world.addEntity(createEnemyShip(gameData));
-        }
-
-        for (Entity entity : world.getEntities(Enemy.class)) {
-            Enemy enemy = (Enemy) entity;
-            startFiring(gameData, world, enemy);
-            startMovement(enemy);
-            handleBorders(gameData, enemy);
-        }
+//        if (shouldCreateNewEnemy(world)) {
+//            world.addEntity(createEnemyShip(gameData));
+//        }
+//
+//        for (Entity entity : world.getEntities(Enemy.class)) {
+//            Enemy enemy = (Enemy) entity;
+//            startFiring(gameData, world, enemy);
+//            startMovement(enemy);
+//            handleBorders(gameData, enemy);
+//        }
     }
 
     private boolean shouldCreateNewEnemy(World world) {

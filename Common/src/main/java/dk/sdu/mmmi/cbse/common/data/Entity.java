@@ -1,12 +1,14 @@
 package dk.sdu.mmmi.cbse.common.data;
 
 import java.io.Serializable;
+import java.time.LocalTime;
 import java.util.UUID;
 
 public class Entity implements Serializable {
 
+    // Maybe remove this enum and use the class name instead?
     public enum EntityType {
-        PLAYER, ENEMY, BULLET
+        PLAYER, ENEMY, BULLET, ASTEROID
     }
 
     private final UUID ID = UUID.randomUUID();
