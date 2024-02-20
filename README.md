@@ -1,4 +1,6 @@
-![Asteroids Icon](./icon.png)
+<p align="center">
+  <img src="./icon.png" alt="drawing" width="500"/>
+</p>
 
 ## Introduction
 This repository contains my project for the Component Based Software Engineering exam portfolio. 
