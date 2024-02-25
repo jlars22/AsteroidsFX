@@ -8,6 +8,7 @@ import dk.sdu.mmmi.cbse.common.bullet.Bullet;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
+import dk.sdu.mmmi.cbse.common.debris.DebrisSPI;
 import dk.sdu.mmmi.cbse.common.scoreservice.IScoreService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 import dk.sdu.mmmi.cbse.enemysystem.Enemy;
@@ -55,6 +56,7 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 
 	private void handleEnemyCollision(Entity enemy, Entity otherEntity, World world) {
 		decrementHealthOrRemoveEntity(enemy, world);
+		createDebris(enemy, world);
 		if (otherEntity instanceof Bullet) {
 			getScoreServices().stream().findFirst().ifPresent(scoreService -> scoreService.addScore(enemy));
 		}
@@ -62,6 +64,7 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 
 	private void handlePlayerCollision(Entity player, Entity otherEntity, World world) {
 		decrementHealthOrRemoveEntity(player, world);
+		createDebris(player, world);
 		if (player.getHealth() != 0) {
 			world.removeEntity(player);
 		}
@@ -69,6 +72,7 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 
 	private void handleAsteroidCollision(Entity asteroid, Entity otherEntity, World world) {
 		decrementHealthOrRemoveEntity(asteroid, world);
+		createDebris(asteroid, world);
 		if (asteroid.getHealth() != 0) {
 			splitAsteroid(asteroid, world);
 		}
@@ -96,6 +100,8 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 	private boolean checkCollision(Entity entityA, Entity entityB) {
 		if (isEntitiesSameInstance(entityA, entityB))
 			return false;
+		if (isAnyEntityDebris(entityA, entityB))
+			return false;
 
 		double aLeft = entityA.getX();
 		double aRight = entityA.getX() + entityA.getWidth();
@@ -110,6 +116,11 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 		return aLeft < bRight && aRight > bLeft && aTop < bBottom && aBottom > bTop;
 	}
 
+	private boolean isAnyEntityDebris(Entity entityA, Entity entityB) {
+		return entityA.getClass().getSimpleName().equals("Debris")
+				|| entityB.getClass().getSimpleName().equals("Debris");
+	}
+
 	private boolean isEntitiesSameInstance(Entity entityA, Entity entityB) {
 		return entityA.getClass().equals(entityB.getClass());
 	}
@@ -120,11 +131,21 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 		});
 	}
 
+	private void createDebris(Entity entity, World world) {
+		getDebrisSPIs().stream().findFirst().ifPresent(spi -> {
+			spi.createDebris(entity, world);
+		});
+	}
+
 	private Collection<? extends AsteroidSPI> getAsteroidSPIs() {
 		return ServiceLoader.load(AsteroidSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
 	}
 
 	private Collection<? extends IScoreService> getScoreServices() {
 		return ServiceLoader.load(IScoreService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+	}
+
+	private Collection<? extends DebrisSPI> getDebrisSPIs() {
+		return ServiceLoader.load(DebrisSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
 	}
 }

@@ -24,12 +24,14 @@ public class EntityStylingService implements IEntityStylingService {
 				polygon.setScaleZ(1.5);
 				break;
 			case "Asteroid" :
+			case "Debris" :
 				polygon.setStroke(Color.WHITE);
 				break;
 			case "Player" :
 				polygon.setStroke(Color.WHITE);
 				polygon.setStrokeWidth(2);
 				break;
+
 		}
 	}
 

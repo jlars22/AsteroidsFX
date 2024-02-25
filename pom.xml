@@ -26,6 +26,8 @@
         <module>EntityStylingService</module>
         <module>CommonScoreService</module>
         <module>ScoreService</module>
+        <module>CommonDebris</module>
+        <module>Debris</module>
     </modules>
     <properties>
         <java>java</java>

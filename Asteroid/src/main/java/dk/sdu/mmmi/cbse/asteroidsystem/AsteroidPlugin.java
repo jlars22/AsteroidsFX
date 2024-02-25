@@ -5,8 +5,11 @@ import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
+import java.util.Random;
 
 public class AsteroidPlugin implements IGamePluginService {
+
+	private final Random random = new Random();
 	@Override
 	public void start(GameData gameData, World world) {
 		for (int i = 0; i < 4; i++) {
@@ -19,18 +22,18 @@ public class AsteroidPlugin implements IGamePluginService {
 			double minY = gameData.getDisplayHeight() * bufferZone;
 			double maxY = gameData.getDisplayHeight() * (1 - bufferZone);
 
-			double x = Math.random() < 0.5
-					? Math.random() * minX
-					: Math.random() * (maxX - gameData.getDisplayWidth()) + gameData.getDisplayWidth();
-			double y = Math.random() < 0.5
-					? Math.random() * minY
-					: Math.random() * (maxY - gameData.getDisplayHeight()) + gameData.getDisplayHeight();
+			double x = random.nextDouble() < 0.5
+					? random.nextDouble() * minX
+					: random.nextDouble() * (maxX - gameData.getDisplayWidth()) + gameData.getDisplayWidth();
+			double y = random.nextDouble() < 0.5
+					? random.nextDouble() * minY
+					: random.nextDouble() * (maxY - gameData.getDisplayHeight()) + gameData.getDisplayHeight();
 
 			asteroid.setX(x);
 			asteroid.setY(y);
-			asteroid.setDY(Math.random() * 2 - 1);
-			asteroid.setDX(Math.random() * 2 - 1);
-			asteroid.setRotation(Math.random() * 360);
+			asteroid.setDY(random.nextDouble(-1, 1));
+			asteroid.setDX(random.nextDouble(-1, 1));
+			asteroid.setRotation(random.nextDouble(360));
 			world.addEntity(asteroid);
 		}
 	}

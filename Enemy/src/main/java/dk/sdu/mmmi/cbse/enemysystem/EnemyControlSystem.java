@@ -117,7 +117,7 @@ public class EnemyControlSystem implements IEntityProcessingService {
 
 		if (lastTimeFired == null || currentTime.isAfter(lastTimeFired.plusSeconds(3))) {
 			getBulletSPIs().stream().findFirst()
-					.ifPresent(spi -> world.addEntity(spi.createBullet(enemy, Math.random() * 360)));
+					.ifPresent(spi -> world.addEntity(spi.createBullet(enemy, random.nextDouble(360))));
 			enemy.setLastTimeFired(currentTime);
 		}
 	}

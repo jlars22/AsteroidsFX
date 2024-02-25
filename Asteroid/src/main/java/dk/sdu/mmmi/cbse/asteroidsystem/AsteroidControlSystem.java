@@ -6,8 +6,11 @@ import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
+import java.util.Random;
 
 public class AsteroidControlSystem implements IEntityProcessingService, AsteroidSPI {
+
+	private final Random random = new Random();
 	@Override
 	public void process(GameData gameData, World world) {
 		for (Entity entity : world.getEntities(Asteroid.class)) {
@@ -47,9 +50,9 @@ public class AsteroidControlSystem implements IEntityProcessingService, Asteroid
 			Asteroid newAsteroid = new Asteroid(asteroid.getSize() - 1);
 			newAsteroid.setX(asteroid.getX());
 			newAsteroid.setY(asteroid.getY());
-			newAsteroid.setDX(Math.random() * 2 - 1);
-			newAsteroid.setDY(Math.random() * 2 - 1);
-			newAsteroid.setRotation(Math.random() * 360);
+			newAsteroid.setDX(random.nextDouble(-1, 1));
+			newAsteroid.setDY(random.nextDouble(-1, 1));
+			newAsteroid.setRotation(random.nextDouble(360));
 			world.addEntity(newAsteroid);
 		}
 	}
