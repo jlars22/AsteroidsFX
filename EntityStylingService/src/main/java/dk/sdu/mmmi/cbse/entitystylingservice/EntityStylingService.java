@@ -8,24 +8,25 @@ import javafx.scene.shape.Polygon;
 public class EntityStylingService implements IEntityStylingService {
 	@Override
 	public void styleEntity(Entity entity, Polygon polygon) {
-		setPolygonStylingByEntityType(entity, polygon);
+		setPolygonStylingByInstance(entity, polygon);
 		setEntityWidthAndHeightByPolygon(entity, polygon);
 	}
 
-	private void setPolygonStylingByEntityType(Entity entity, Polygon polygon) {
-		switch (entity.getEntityType()) {
-			case BULLET :
+	private void setPolygonStylingByInstance(Entity entity, Polygon polygon) {
+		switch (entity.getClass().getSimpleName()) {
+			case "Bullet" :
 				polygon.setFill(Color.valueOf(entity.getColor()));
 				break;
-			case ENEMY :
+			case "Enemy" :
 				polygon.setStroke(Color.valueOf(entity.getColor()));
 				polygon.setScaleX(1.5);
 				polygon.setScaleY(1.5);
 				polygon.setScaleZ(1.5);
-			case ASTEROID :
+				break;
+			case "Asteroid" :
 				polygon.setStroke(Color.valueOf(entity.getColor()));
 				break;
-			case PLAYER :
+			case "Player" :
 				polygon.setStroke(Color.valueOf(entity.getColor()));
 				polygon.setStrokeWidth(2);
 				break;

@@ -6,11 +6,6 @@ import java.util.UUID;
 
 public class Entity implements Serializable {
 
-	// Maybe remove this enum and use the class name instead?
-	public enum EntityType {
-		PLAYER, ENEMY, BULLET, ASTEROID
-	}
-
 	private final UUID ID = UUID.randomUUID();
 
 	private double[] polygonCoordinates;
@@ -22,7 +17,6 @@ public class Entity implements Serializable {
 	private double dy;
 	private double rotation;
 	private int health;
-	private EntityType entityType;
 	private String color;
 	private LocalTime respawnTime;
 
@@ -84,14 +78,6 @@ public class Entity implements Serializable {
 
 	public void setColor(String color) {
 		this.color = color;
-	}
-
-	public EntityType getEntityType() {
-		return entityType;
-	}
-
-	public void setEntityType(EntityType entityType) {
-		this.entityType = entityType;
 	}
 
 	public double getWidth() {

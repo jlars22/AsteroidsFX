@@ -5,6 +5,8 @@ module Collision {
 	requires CommonAsteroid;
 	requires CommonScoreService;
 	requires CommonBullet;
+	requires Enemy;
+	requires Player;
 
 	uses dk.sdu.mmmi.cbse.common.asteroid.AsteroidSPI;
 	uses dk.sdu.mmmi.cbse.common.scoreservice.IScoreService;

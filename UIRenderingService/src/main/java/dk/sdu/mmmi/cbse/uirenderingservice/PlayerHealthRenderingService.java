@@ -32,7 +32,7 @@ public class PlayerHealthRenderingService implements IUIRenderingService {
 		for (int i = 0; i < gameData.getPlayer().getHealth(); i++) {
 			Polygon miniPlayer = generateMiniPlayer();
 			miniPlayer.setId("miniPlayer" + i);
-			miniPlayer.setLayoutX(14 + i * 25); // adjust the position
+			miniPlayer.setLayoutX(14 + i * 25);
 			gameWindow.getChildren().add(miniPlayer);
 		}
 	}

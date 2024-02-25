@@ -7,7 +7,6 @@ public class Asteroid extends Entity {
 
 	public Asteroid(int size) {
 		this.size = size;
-		this.setEntityType(EntityType.ASTEROID);
 		this.setColor("WHITE");
 		this.setHealth(size);
 		this.setPolygonCoordinates(10 * size, 0, 28 * size, 0, 40 * size, 10 * size, 45 * size, 20 * size, 40 * size,

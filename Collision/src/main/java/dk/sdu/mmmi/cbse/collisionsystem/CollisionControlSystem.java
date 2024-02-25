@@ -2,14 +2,16 @@ package dk.sdu.mmmi.cbse.collisionsystem;
 
 import static java.util.stream.Collectors.toList;
 
+import dk.sdu.mmmi.cbse.common.asteroid.Asteroid;
 import dk.sdu.mmmi.cbse.common.asteroid.AsteroidSPI;
 import dk.sdu.mmmi.cbse.common.bullet.Bullet;
 import dk.sdu.mmmi.cbse.common.data.Entity;
-import dk.sdu.mmmi.cbse.common.data.Entity.EntityType;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.scoreservice.IScoreService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
+import dk.sdu.mmmi.cbse.enemysystem.Enemy;
+import dk.sdu.mmmi.cbse.playersystem.Player;
 import java.util.Collection;
 import java.util.ServiceLoader;
 
@@ -30,15 +32,15 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 	}
 
 	private void handleCollision(Entity entityA, Entity entityB, World world) {
-		handleEntityCollision(entityA, entityB, world, EntityType.ENEMY, this::handleEnemyCollision);
-		handleEntityCollision(entityA, entityB, world, EntityType.PLAYER, this::handlePlayerCollision);
-		handleEntityCollision(entityA, entityB, world, EntityType.ASTEROID, this::handleAsteroidCollision);
+		handleEntityCollision(entityA, entityB, world, Enemy.class, this::handleEnemyCollision);
+		handleEntityCollision(entityA, entityB, world, Player.class, this::handlePlayerCollision);
+		handleEntityCollision(entityA, entityB, world, Asteroid.class, this::handleAsteroidCollision);
 	}
 
-	private void handleEntityCollision(Entity entityA, Entity entityB, World world, EntityType type,
+	private void handleEntityCollision(Entity entityA, Entity entityB, World world, Class<?> type,
 			CollisionHandler handler) {
-		if (entityA.getEntityType().equals(type) || entityB.getEntityType().equals(type)) {
-			if (entityA.getEntityType().equals(type)) {
+		if (type.isInstance(entityA) || type.isInstance(entityB)) {
+			if (type.isInstance(entityA)) {
 				handler.handle(entityA, entityB, world);
 			} else {
 				handler.handle(entityB, entityA, world);
@@ -53,7 +55,7 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 
 	private void handleEnemyCollision(Entity enemy, Entity otherEntity, World world) {
 		decrementHealthOrRemoveEntity(enemy, world);
-		if (otherEntity.getEntityType().equals(EntityType.BULLET)) {
+		if (otherEntity instanceof Bullet) {
 			getScoreServices().stream().findFirst().ifPresent(scoreService -> scoreService.addScore(enemy));
 		}
 	}
@@ -70,15 +72,14 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 		if (asteroid.getHealth() != 0) {
 			splitAsteroid(asteroid, world);
 		}
-		if (otherEntity.getEntityType().equals(EntityType.BULLET)
-				&& ((Bullet) otherEntity).getOwner().getEntityType().equals(EntityType.PLAYER)) {
+		if (otherEntity instanceof Bullet && ((Bullet) otherEntity).getOwner() instanceof Player) {
 			getScoreServices().stream().findFirst().ifPresent(scoreService -> scoreService.addScore(asteroid));
 		}
 	}
 
 	private void removeBullet(Entity entityA, Entity entityB, World world) {
-		if (entityA.getEntityType().equals(EntityType.BULLET) || entityB.getEntityType().equals(EntityType.BULLET)) {
-			Entity bullet = entityA.getEntityType().equals(EntityType.BULLET) ? entityA : entityB;
+		if (entityA instanceof Bullet || entityB instanceof Bullet) {
+			Entity bullet = entityA instanceof Bullet ? entityA : entityB;
 			world.removeEntity(bullet);
 		}
 	}
@@ -93,7 +94,7 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 	}
 
 	private boolean checkCollision(Entity entityA, Entity entityB) {
-		if (isEntitiesSameType(entityA, entityB))
+		if (isEntitiesSameInstance(entityA, entityB))
 			return false;
 
 		double aLeft = entityA.getX();
@@ -109,8 +110,8 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 		return aLeft < bRight && aRight > bLeft && aTop < bBottom && aBottom > bTop;
 	}
 
-	private boolean isEntitiesSameType(Entity entityA, Entity entityB) {
-		return entityA.getEntityType().equals(entityB.getEntityType());
+	private boolean isEntitiesSameInstance(Entity entityA, Entity entityB) {
+		return entityA.getClass().equals(entityB.getClass());
 	}
 
 	private void splitAsteroid(Entity entity, World world) {

@@ -5,6 +5,7 @@ module ScoreService {
 	requires CommonScoreService;
 	requires Common;
 	requires CommonAsteroid;
+	requires Enemy;
 
 	provides IScoreService with ScoreService;
 }
