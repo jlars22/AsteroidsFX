@@ -6,6 +6,7 @@ import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.GameKeys;
 import dk.sdu.mmmi.cbse.common.data.World;
+import dk.sdu.mmmi.cbse.common.entitystylingservice.IEntityStylingService;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
@@ -54,8 +55,11 @@ public class Main extends Application {
 
 		for (Entity entity : world.getEntities()) {
 			Polygon polygon = new Polygon(entity.getPolygonCoordinates());
-			setPolygonStylingByEntityType(entity, polygon);
-			setEntityWidthAndHeightByPolygon(entity, polygon);
+
+			for (IEntityStylingService entityStylingService : getEntityStylingServices()) {
+				entityStylingService.styleEntity(entity, polygon);
+			}
+
 			polygons.put(entity, polygon);
 			gameWindow.getChildren().add(polygon);
 		}
@@ -133,8 +137,11 @@ public class Main extends Application {
 		for (Entity entity : world.getEntities()) {
 			if (!polygons.containsKey(entity)) {
 				Polygon polygon = new Polygon(entity.getPolygonCoordinates());
-				setPolygonStylingByEntityType(entity, polygon);
-				setEntityWidthAndHeightByPolygon(entity, polygon);
+
+				for (IEntityStylingService entityStylingService : getEntityStylingServices()) {
+					entityStylingService.styleEntity(entity, polygon);
+				}
+
 				polygons.put(entity, polygon);
 				gameWindow.getChildren().add(polygon);
 			}
@@ -156,31 +163,6 @@ public class Main extends Application {
 
 	}
 
-	private void setEntityWidthAndHeightByPolygon(Entity entity, Polygon polygon) {
-		entity.setWidth(polygon.getBoundsInLocal().getWidth());
-		entity.setHeight(polygon.getBoundsInLocal().getHeight());
-	}
-
-	private void setPolygonStylingByEntityType(Entity entity, Polygon polygon) {
-		switch (entity.getEntityType()) {
-			case BULLET :
-				polygon.setFill(Color.valueOf(entity.getColor()));
-				break;
-			case ENEMY :
-				polygon.setStroke(Color.valueOf(entity.getColor()));
-				polygon.setScaleX(1.5);
-				polygon.setScaleY(1.5);
-				polygon.setScaleZ(1.5);
-			case ASTEROID :
-				polygon.setStroke(Color.valueOf(entity.getColor()));
-				break;
-			case PLAYER :
-				polygon.setStroke(Color.valueOf(entity.getColor()));
-				polygon.setStrokeWidth(2);
-				break;
-		}
-	}
-
 	private Collection<? extends IGamePluginService> getPluginServices() {
 		return ServiceLoader.load(IGamePluginService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
 	}
@@ -197,6 +179,11 @@ public class Main extends Application {
 
 	private Collection<? extends IUIRenderingService> getUIRenderingServices() {
 		return ServiceLoader.load(IUIRenderingService.class).stream().map(ServiceLoader.Provider::get)
+				.collect(toList());
+	}
+
+	private Collection<? extends IEntityStylingService> getEntityStylingServices() {
+		return ServiceLoader.load(IEntityStylingService.class).stream().map(ServiceLoader.Provider::get)
 				.collect(toList());
 	}
 }

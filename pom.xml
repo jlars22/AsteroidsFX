@@ -22,6 +22,8 @@
         <module>CommonAsteroid</module>
         <module>CommonUIRenderingService</module>
         <module>UIRenderingService</module>
+        <module>CommonEntityStylingService</module>
+        <module>EntityStylingService</module>
     </modules>
     <properties>
         <java>java</java>

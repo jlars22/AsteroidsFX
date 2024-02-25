@@ -3,6 +3,7 @@ module Core {
 	requires CommonBullet;
 	requires javafx.graphics;
 	requires CommonUIRenderingService;
+	requires CommonEntityStylingService;
 
 	opens dk.sdu.mmmi.cbse.main to javafx.graphics;
 
@@ -10,4 +11,5 @@ module Core {
 	uses dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 	uses dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 	uses dk.sdu.mmmi.cbse.common.uirenderingservice.IUIRenderingService;
+	uses dk.sdu.mmmi.cbse.common.entitystylingservice.IEntityStylingService;
 }
