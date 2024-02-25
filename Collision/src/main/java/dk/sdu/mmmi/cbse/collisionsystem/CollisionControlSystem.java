@@ -3,10 +3,12 @@ package dk.sdu.mmmi.cbse.collisionsystem;
 import static java.util.stream.Collectors.toList;
 
 import dk.sdu.mmmi.cbse.common.asteroid.AsteroidSPI;
+import dk.sdu.mmmi.cbse.common.bullet.Bullet;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.Entity.EntityType;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
+import dk.sdu.mmmi.cbse.common.scoreservice.IScoreService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 import java.util.Collection;
 import java.util.ServiceLoader;
@@ -51,6 +53,9 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 
 	private void handleEnemyCollision(Entity enemy, Entity otherEntity, World world) {
 		decrementHealthOrRemoveEntity(enemy, world);
+		if (otherEntity.getEntityType().equals(EntityType.BULLET)) {
+			getScoreServices().stream().findFirst().ifPresent(scoreService -> scoreService.addScore(enemy));
+		}
 	}
 
 	private void handlePlayerCollision(Entity player, Entity otherEntity, World world) {
@@ -64,6 +69,10 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 		decrementHealthOrRemoveEntity(asteroid, world);
 		if (asteroid.getHealth() != 0) {
 			splitAsteroid(asteroid, world);
+		}
+		if (otherEntity.getEntityType().equals(EntityType.BULLET)
+				&& ((Bullet) otherEntity).getOwner().getEntityType().equals(EntityType.PLAYER)) {
+			getScoreServices().stream().findFirst().ifPresent(scoreService -> scoreService.addScore(asteroid));
 		}
 	}
 
@@ -112,5 +121,9 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 
 	private Collection<? extends AsteroidSPI> getAsteroidSPIs() {
 		return ServiceLoader.load(AsteroidSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+	}
+
+	private Collection<? extends IScoreService> getScoreServices() {
+		return ServiceLoader.load(IScoreService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
 	}
 }

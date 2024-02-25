@@ -65,6 +65,7 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI 
 		bullet.setX(shooter.getX() + offsetX);
 		bullet.setY(shooter.getY() + offsetY);
 
+		bullet.setOwner(shooter);
 		return bullet;
 	}
 

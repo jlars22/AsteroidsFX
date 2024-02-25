@@ -22,7 +22,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -44,8 +43,7 @@ public class Main extends Application {
 		Scene scene = getScene();
 
 		for (IUIRenderingService renderingService : getUIRenderingServices()) {
-			Text text = renderingService.generate();
-			gameWindow.getChildren().add(text);
+			renderingService.generate(gameWindow);
 		}
 
 		// Lookup all Game Plugins using ServiceLoader
