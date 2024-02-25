@@ -9,6 +9,7 @@ import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
+import dk.sdu.mmmi.cbse.common.uirenderingservice.IUIRenderingService;
 import java.util.Collection;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -20,8 +21,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
-import javafx.scene.shape.StrokeType;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -31,7 +30,6 @@ public class Main extends Application {
 	private final World world = new World();
 	private final Map<Entity, Polygon> polygons = new ConcurrentHashMap<>();
 	private final Pane gameWindow = new Pane();
-	private Text text;
 
 	public static void main(String[] args) {
 		launch(Main.class);
@@ -40,11 +38,14 @@ public class Main extends Application {
 	@Override
 	public void start(Stage window) throws Exception {
 		window.setResizable(false);
-		generatePlayerHealthText();
 		gameWindow.setPrefSize(gameData.getDisplayWidth(), gameData.getDisplayHeight());
-		gameWindow.getChildren().add(text);
 
 		Scene scene = getScene();
+
+		for (IUIRenderingService renderingService : getUIRenderingServices()) {
+			Text text = renderingService.generate();
+			gameWindow.getChildren().add(text);
+		}
 
 		// Lookup all Game Plugins using ServiceLoader
 		for (IGamePluginService iGamePlugin : getPluginServices()) {
@@ -121,6 +122,10 @@ public class Main extends Application {
 		for (IPostEntityProcessingService postEntityProcessorService : getPostEntityProcessingServices()) {
 			postEntityProcessorService.process(gameData, world);
 		}
+
+		for (IUIRenderingService renderingService : getUIRenderingServices()) {
+			renderingService.update(gameWindow, gameData);
+		}
 	}
 
 	private void draw() {
@@ -149,16 +154,6 @@ public class Main extends Application {
 			}
 		});
 
-		text.setText(generateHearts(gameData.getPlayer().getHealth()));
-		text.toFront();
-	}
-
-	private void generatePlayerHealthText() {
-		text = new Text(10, 20, "");
-		text.setFont(new Font(30));
-		text.setStroke(Color.WHITE);
-		text.setStrokeWidth(1);
-		text.setStrokeType(StrokeType.OUTSIDE);
 	}
 
 	private void setEntityWidthAndHeightByPolygon(Entity entity, Polygon polygon) {
@@ -186,10 +181,6 @@ public class Main extends Application {
 		}
 	}
 
-	private String generateHearts(int health) {
-		return "❤ ".repeat(Math.max(0, health));
-	}
-
 	private Collection<? extends IGamePluginService> getPluginServices() {
 		return ServiceLoader.load(IGamePluginService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
 	}
@@ -201,6 +192,11 @@ public class Main extends Application {
 
 	private Collection<? extends IPostEntityProcessingService> getPostEntityProcessingServices() {
 		return ServiceLoader.load(IPostEntityProcessingService.class).stream().map(ServiceLoader.Provider::get)
+				.collect(toList());
+	}
+
+	private Collection<? extends IUIRenderingService> getUIRenderingServices() {
+		return ServiceLoader.load(IUIRenderingService.class).stream().map(ServiceLoader.Provider::get)
 				.collect(toList());
 	}
 }

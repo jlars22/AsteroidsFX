@@ -20,6 +20,8 @@
         <module>Collision</module>
         <module>Asteroid</module>
         <module>CommonAsteroid</module>
+        <module>CommonUIRenderingService</module>
+        <module>UIRenderingService</module>
     </modules>
     <properties>
         <java>java</java>
