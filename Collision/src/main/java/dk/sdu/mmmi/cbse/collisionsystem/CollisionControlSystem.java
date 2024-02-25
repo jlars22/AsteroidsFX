@@ -2,17 +2,15 @@ package dk.sdu.mmmi.cbse.collisionsystem;
 
 import static java.util.stream.Collectors.toList;
 
-import dk.sdu.mmmi.cbse.common.asteroid.Asteroid;
 import dk.sdu.mmmi.cbse.common.asteroid.AsteroidSPI;
 import dk.sdu.mmmi.cbse.common.bullet.Bullet;
 import dk.sdu.mmmi.cbse.common.data.Entity;
+import dk.sdu.mmmi.cbse.common.data.Entity.Type;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.debris.DebrisSPI;
 import dk.sdu.mmmi.cbse.common.scoreservice.IScoreService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
-import dk.sdu.mmmi.cbse.enemysystem.Enemy;
-import dk.sdu.mmmi.cbse.playersystem.Player;
 import java.util.Collection;
 import java.util.ServiceLoader;
 
@@ -33,15 +31,15 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 	}
 
 	private void handleCollision(Entity entityA, Entity entityB, World world) {
-		handleEntityCollision(entityA, entityB, world, Enemy.class, this::handleEnemyCollision);
-		handleEntityCollision(entityA, entityB, world, Player.class, this::handlePlayerCollision);
-		handleEntityCollision(entityA, entityB, world, Asteroid.class, this::handleAsteroidCollision);
+		handleEntityCollision(entityA, entityB, world, Type.ENEMY, this::handleEnemyCollision);
+		handleEntityCollision(entityA, entityB, world, Type.PLAYER, this::handlePlayerCollision);
+		handleEntityCollision(entityA, entityB, world, Type.ASTEROID, this::handleAsteroidCollision);
 	}
 
-	private void handleEntityCollision(Entity entityA, Entity entityB, World world, Class<?> type,
+	private void handleEntityCollision(Entity entityA, Entity entityB, World world, Type type,
 			CollisionHandler handler) {
-		if (type.isInstance(entityA) || type.isInstance(entityB)) {
-			if (type.isInstance(entityA)) {
+		if (type.equals(entityA.getType()) || type.equals(entityB.getType())) {
+			if (type.equals(entityA.getType())) {
 				handler.handle(entityA, entityB, world);
 			} else {
 				handler.handle(entityB, entityA, world);
@@ -76,7 +74,7 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 		if (asteroid.getHealth() != 0) {
 			splitAsteroid(asteroid, world);
 		}
-		if (otherEntity instanceof Bullet && ((Bullet) otherEntity).getOwner() instanceof Player) {
+		if (otherEntity instanceof Bullet && ((Bullet) otherEntity).getOwner().getType().equals(Type.PLAYER)) {
 			getScoreServices().stream().findFirst().ifPresent(scoreService -> scoreService.addScore(asteroid));
 		}
 	}

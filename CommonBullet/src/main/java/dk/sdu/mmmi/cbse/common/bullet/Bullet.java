@@ -8,7 +8,7 @@ public class Bullet extends Entity {
 	private Entity owner;
 
 	public Bullet() {
-		this.setPolygonCoordinates(2, 0, 1, 1, 1, 2, 2, 3, 3, 3, 4, 2, 4, 1, 3, 0);
+		super(Type.BULLET, new double[]{2, 0, 1, 1, 1, 2, 2, 3, 3, 3, 4, 2, 4, 1, 3, 0});
 	}
 
 	public double getDistanceTravelled() {

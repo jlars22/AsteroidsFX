@@ -5,6 +5,9 @@ import java.time.LocalTime;
 import java.util.UUID;
 
 public class Entity implements Serializable {
+	public enum Type {
+		PLAYER, ENEMY, BULLET, ASTEROID, DEBRIS
+	}
 
 	private final UUID ID = UUID.randomUUID();
 
@@ -18,6 +21,12 @@ public class Entity implements Serializable {
 	private double rotation;
 	private int health;
 	private LocalTime respawnTime;
+	private Type type;
+
+	public Entity(Type type, double[] polygonCoordinates) {
+		this.type = type;
+		this.polygonCoordinates = polygonCoordinates;
+	}
 
 	public String getID() {
 		return ID.toString();
@@ -101,6 +110,10 @@ public class Entity implements Serializable {
 
 	public void setRespawnTime(LocalTime respawnTime) {
 		this.respawnTime = respawnTime;
+	}
+
+	public Type getType() {
+		return type;
 	}
 
 }
