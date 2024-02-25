@@ -17,7 +17,6 @@ public class Entity implements Serializable {
 	private double dy;
 	private double rotation;
 	private int health;
-	private String color;
 	private LocalTime respawnTime;
 
 	public String getID() {
@@ -70,14 +69,6 @@ public class Entity implements Serializable {
 
 	public void setDY(double dy) {
 		this.dy = dy;
-	}
-
-	public String getColor() {
-		return color;
-	}
-
-	public void setColor(String color) {
-		this.color = color;
 	}
 
 	public double getWidth() {

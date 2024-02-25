@@ -6,7 +6,6 @@ public class Player extends Entity {
 
 	public Player() {
 		this.setPolygonCoordinates(-10, -10, 20, 0, -10, 10);
-		this.setColor("WHITE");
 		this.setHealth(3);
 	}
 }

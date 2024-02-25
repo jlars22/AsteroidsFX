@@ -15,19 +15,19 @@ public class EntityStylingService implements IEntityStylingService {
 	private void setPolygonStylingByInstance(Entity entity, Polygon polygon) {
 		switch (entity.getClass().getSimpleName()) {
 			case "Bullet" :
-				polygon.setFill(Color.valueOf(entity.getColor()));
+				polygon.setFill(Color.YELLOW);
 				break;
 			case "Enemy" :
-				polygon.setStroke(Color.valueOf(entity.getColor()));
+				polygon.setStroke(Color.WHITE);
 				polygon.setScaleX(1.5);
 				polygon.setScaleY(1.5);
 				polygon.setScaleZ(1.5);
 				break;
 			case "Asteroid" :
-				polygon.setStroke(Color.valueOf(entity.getColor()));
+				polygon.setStroke(Color.WHITE);
 				break;
 			case "Player" :
-				polygon.setStroke(Color.valueOf(entity.getColor()));
+				polygon.setStroke(Color.WHITE);
 				polygon.setStrokeWidth(2);
 				break;
 		}

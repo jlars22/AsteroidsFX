@@ -9,7 +9,6 @@ public class Bullet extends Entity {
 
 	public Bullet() {
 		this.setPolygonCoordinates(2, 0, 1, 1, 1, 2, 2, 3, 3, 3, 4, 2, 4, 1, 3, 0);
-		this.setColor("YELLOW");
 	}
 
 	public double getDistanceTravelled() {
