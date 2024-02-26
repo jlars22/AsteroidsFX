@@ -7,8 +7,11 @@ public class Debris extends Entity {
 
 	private final LocalTime shouldBeRemovedTime;
 
-	public Debris() {
-		super(Type.DEBRIS, new double[]{0, 0, 1, 0, 1, 1, 0, 1});
+	public Debris(double size) {
+		super(Type.DEBRIS,
+				new double[]{10 * size, 0, 28 * size, 0, 40 * size, 10 * size, 45 * size, 20 * size, 40 * size,
+						30 * size, 30 * size, 40 * size, 20 * size, 30 * size, 15 * size, 20 * size, 10 * size,
+						10 * size, 10 * size, 0});
 		shouldBeRemovedTime = LocalTime.now().plusSeconds(1);
 	}
 

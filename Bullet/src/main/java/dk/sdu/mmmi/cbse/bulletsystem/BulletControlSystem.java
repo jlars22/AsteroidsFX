@@ -25,24 +25,6 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI,
 		}
 	}
 
-	/**
-	 * Manages bullet movement in the game world
-	 *
-	 * <p>
-	 * Calculates the new position of the bullet using trigonometry based on its
-	 * rotation and a constant speed.
-	 * <p>
-	 * Also tracks the total distance the bullet has travelled using the Pythagorean
-	 * theorem
-	 * <p>
-	 * If the bullet exceeds its maximum travel distance, it is removed from the
-	 * game world
-	 *
-	 * @param world
-	 *            The game world.
-	 * @param bullet
-	 *            The bullet entity.
-	 */
 	private void handleTravel(World world, Bullet bullet) {
 		double changeX = Math.cos(Math.toRadians(bullet.getRotation())) * BULLET_SPEED;
 		double changeY = Math.sin(Math.toRadians(bullet.getRotation())) * BULLET_SPEED;
@@ -60,17 +42,7 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI,
 
 	@Override
 	public Entity createBullet(Entity shooter) {
-		Bullet bullet = new Bullet();
-		bullet.setRotation(shooter.getRotation());
-
-		double offsetX = Math.cos(Math.toRadians(shooter.getRotation())) * OFFSET_DISTANCE;
-		double offsetY = Math.sin(Math.toRadians(shooter.getRotation())) * OFFSET_DISTANCE;
-
-		bullet.setX(shooter.getX() + offsetX);
-		bullet.setY(shooter.getY() + offsetY);
-
-		bullet.setOwner(shooter);
-		return bullet;
+		return createBullet(shooter, shooter.getRotation());
 	}
 
 	@Override
@@ -104,23 +76,22 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI,
 
 	@Override
 	public void onEvent(Event event) {
-		if (event.getEventType() == Event.EventType.COLLISION) {
-			Entity entityA = event.getEntityA();
-			Entity entityB = event.getEntityB();
-			if (entityA instanceof Bullet) {
-				event.getWorld().removeEntity(entityA);
-				if (((Bullet) entityA).getOwner().getType() != Entity.Type.ENEMY) {
-					Event scoreEvent = new Event(entityA, entityB, Event.EventType.SCORE_INCREMENT, event.getWorld());
-					eventBroker.notifyObservers(scoreEvent);
-				}
-			}
-			if (entityB instanceof Bullet) {
-				event.getWorld().removeEntity(entityB);
-				if (((Bullet) entityB).getOwner().getType() != Entity.Type.ENEMY) {
-					Event scoreEvent = new Event(entityB, entityA, Event.EventType.SCORE_INCREMENT, event.getWorld());
-					eventBroker.notifyObservers(scoreEvent);
-				}
-			}
-		}
+		if (event.getEventType() != Event.EventType.COLLISION)
+			return;
+
+		handleBulletCollision(event.getEntityA(), event.getEntityB(), event);
+		handleBulletCollision(event.getEntityB(), event.getEntityA(), event);
+	}
+
+	private void handleBulletCollision(Entity entity, Entity otherEntity, Event event) {
+		if (!(entity instanceof Bullet))
+			return;
+
+		event.getWorld().removeEntity(entity);
+		if (((Bullet) entity).getOwner().getType() == Entity.Type.ENEMY)
+			return;
+
+		Event scoreEvent = new Event(entity, otherEntity, Event.EventType.SCORE_INCREMENT, event.getWorld());
+		eventBroker.notifyObservers(scoreEvent);
 	}
 }

@@ -166,7 +166,6 @@ public class Main extends Application {
 	}
 
 	private void loadObservers() {
-		System.out.println("Loading observers");
 		ServiceLoader.load(IObserver.class).forEach(eventBroker::addObserver);
 	}
 

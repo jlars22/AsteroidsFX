@@ -32,8 +32,6 @@ public class DebrisControlSystem implements IEntityProcessingService, IObserver 
 			Entity entityA = event.getEntityA();
 			Entity entityB = event.getEntityB();
 
-			// Make debris on every form of collission except for the bullet entity, the
-			// bullet should not leave debris only the thing it hits
 			if (entityA.getType() != Entity.Type.BULLET) {
 				makeDebris(entityA, event.getWorld());
 			}
@@ -46,7 +44,7 @@ public class DebrisControlSystem implements IEntityProcessingService, IObserver 
 	private void makeDebris(Entity entity, World world) {
 		int debrisCount = random.nextInt(3, 7);
 		for (int i = 0; i < debrisCount; i++) {
-			Entity debris = new Debris();
+			Entity debris = new Debris(random.nextDouble(0.2));
 			debris.setX(entity.getX());
 			debris.setY(entity.getY());
 			debris.setDX(random.nextDouble(-1, 1));
