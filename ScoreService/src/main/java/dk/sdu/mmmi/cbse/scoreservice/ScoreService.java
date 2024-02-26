@@ -1,22 +1,24 @@
 package dk.sdu.mmmi.cbse.scoreservice;
 
-import dk.sdu.mmmi.cbse.common.asteroid.Asteroid;
 import dk.sdu.mmmi.cbse.common.data.Entity;
+import dk.sdu.mmmi.cbse.common.data.Event;
 import dk.sdu.mmmi.cbse.common.scoreservice.IScoreService;
-import dk.sdu.mmmi.cbse.enemysystem.Enemy;
+import dk.sdu.mmmi.cbse.common.services.IObserver;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ScoreService implements IScoreService {
+public class ScoreService implements IScoreService, IObserver {
 
+	private final Set<String> scoredEntities = new HashSet<>();
 	static AtomicInteger counter = new AtomicInteger(0);
 
 	@Override
 	public void addScore(Entity entity) {
-		if (entity instanceof Enemy) {
+		if (entity.getType() == Entity.Type.ENEMY) {
 			counter.getAndAdd(200);
-		} else if (entity instanceof Asteroid) {
-			Asteroid asteroid = (Asteroid) entity;
-			counter.getAndAdd(160 - 40 * asteroid.getSize());
+		} else if (entity.getType() == Entity.Type.ASTEROID) {
+			counter.getAndAdd(160 - 40 * entity.getHealth());
 		}
 	}
 
@@ -28,5 +30,26 @@ public class ScoreService implements IScoreService {
 	@Override
 	public void resetScore() {
 		counter.set(0);
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event.getEventType() == Event.EventType.COLLISION) {
+			Entity entityA = event.getEntityA();
+			Entity entityB = event.getEntityB();
+
+			if (entityA.getType() == Entity.Type.ENEMY || entityA.getType() == Entity.Type.ASTEROID) {
+				if (!scoredEntities.contains(entityA.getID())) {
+					addScore(entityA);
+					scoredEntities.add(entityA.getID());
+				}
+			}
+			if (entityB.getType() == Entity.Type.ENEMY || entityB.getType() == Entity.Type.ASTEROID) {
+				if (!scoredEntities.contains(entityB.getID())) {
+					addScore(entityB);
+					scoredEntities.add(entityB.getID());
+				}
+			}
+		}
 	}
 }

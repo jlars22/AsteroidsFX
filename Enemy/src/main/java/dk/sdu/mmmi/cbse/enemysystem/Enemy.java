@@ -5,7 +5,6 @@ import java.time.LocalTime;
 
 public class Enemy extends Entity {
 
-	private LocalTime lastTimeSpawned;
 	private LocalTime lastTimeFired;
 	private LocalTime lastTimeChangedDirection;
 

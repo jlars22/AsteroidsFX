@@ -4,15 +4,17 @@ import static java.util.stream.Collectors.toList;
 
 import dk.sdu.mmmi.cbse.common.bullet.BulletSPI;
 import dk.sdu.mmmi.cbse.common.data.Entity;
+import dk.sdu.mmmi.cbse.common.data.Event;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.GameKeys;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
+import dk.sdu.mmmi.cbse.common.services.IObserver;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.ServiceLoader;
 
-public class PlayerControlSystem implements IEntityProcessingService {
+public class PlayerControlSystem implements IEntityProcessingService, IObserver {
 
 	@Override
 	public void process(GameData gameData, World world) {
@@ -21,6 +23,23 @@ public class PlayerControlSystem implements IEntityProcessingService {
 			handleInput(gameData, world, player);
 			updatePosition(player);
 			handleBorders(gameData, player);
+		}
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event.getEventType() == Event.EventType.COLLISION) {
+			Entity entityA = event.getEntityA();
+			Entity entityB = event.getEntityB();
+
+			if (entityA instanceof Player) {
+				event.getWorld().removeEntity(entityA);
+				entityA.setHealth(entityA.getHealth() - 1);
+			}
+			if (entityB instanceof Player) {
+				event.getWorld().removeEntity(entityB);
+				entityB.setHealth(entityB.getHealth() - 1);
+			}
 		}
 	}
 
@@ -100,4 +119,5 @@ public class PlayerControlSystem implements IEntityProcessingService {
 	private Collection<? extends BulletSPI> getBulletSPIs() {
 		return ServiceLoader.load(BulletSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
 	}
+
 }

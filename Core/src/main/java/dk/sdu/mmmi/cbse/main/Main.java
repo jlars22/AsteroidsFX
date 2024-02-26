@@ -3,12 +3,14 @@ package dk.sdu.mmmi.cbse.main;
 import static java.util.stream.Collectors.toList;
 
 import dk.sdu.mmmi.cbse.common.data.Entity;
+import dk.sdu.mmmi.cbse.common.data.EventBroker;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.GameKeys;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.entitystylingservice.IEntityStylingService;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
+import dk.sdu.mmmi.cbse.common.services.IObserver;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.uirenderingservice.IUIRenderingService;
 import java.util.Collection;
@@ -30,6 +32,7 @@ public class Main extends Application {
 	private final World world = new World();
 	private final Map<Entity, Polygon> polygons = new ConcurrentHashMap<>();
 	private final Pane gameWindow = new Pane();
+	private final EventBroker eventBroker = EventBroker.getInstance();
 
 	public static void main(String[] args) {
 		launch(Main.class);
@@ -63,6 +66,7 @@ public class Main extends Application {
 		}
 
 		render();
+		loadObservers();
 
 		window.setScene(scene);
 		window.setTitle("ASTEROIDS");
@@ -159,6 +163,11 @@ public class Main extends Application {
 			}
 		});
 
+	}
+
+	private void loadObservers() {
+		System.out.println("Loading observers");
+		ServiceLoader.load(IObserver.class).forEach(eventBroker::addObserver);
 	}
 
 	private Collection<? extends IGamePluginService> getPluginServices() {

@@ -12,4 +12,5 @@ module Core {
 	uses dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 	uses dk.sdu.mmmi.cbse.common.uirenderingservice.IUIRenderingService;
 	uses dk.sdu.mmmi.cbse.common.entitystylingservice.IEntityStylingService;
+	uses dk.sdu.mmmi.cbse.common.services.IObserver;
 }

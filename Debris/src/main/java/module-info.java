@@ -1,10 +1,11 @@
-import dk.sdu.mmmi.cbse.common.debris.DebrisSPI;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
+import dk.sdu.mmmi.cbse.common.services.IObserver;
+import dk.sdu.mmmi.cbse.debrissystem.DebrisControlSystem;
 
 module Debris {
 	requires Common;
 	requires CommonDebris;
 
-	provides DebrisSPI with dk.sdu.mmmi.cbse.debrissystem.DebrisControlSystem;
-	provides IEntityProcessingService with dk.sdu.mmmi.cbse.debrissystem.DebrisControlSystem;
+	provides IEntityProcessingService with DebrisControlSystem;
+	provides IObserver with DebrisControlSystem;
 }

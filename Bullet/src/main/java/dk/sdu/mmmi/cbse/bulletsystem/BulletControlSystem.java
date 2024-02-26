@@ -3,14 +3,18 @@ package dk.sdu.mmmi.cbse.bulletsystem;
 import dk.sdu.mmmi.cbse.common.bullet.Bullet;
 import dk.sdu.mmmi.cbse.common.bullet.BulletSPI;
 import dk.sdu.mmmi.cbse.common.data.Entity;
+import dk.sdu.mmmi.cbse.common.data.Event;
+import dk.sdu.mmmi.cbse.common.data.EventBroker;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
+import dk.sdu.mmmi.cbse.common.services.IObserver;
 
-public class BulletControlSystem implements IEntityProcessingService, BulletSPI {
+public class BulletControlSystem implements IEntityProcessingService, BulletSPI, IObserver {
 
 	private final double OFFSET_DISTANCE = 40;
 	private final int BULLET_SPEED = 3;
+	private final EventBroker eventBroker = EventBroker.getInstance();
 
 	@Override
 	public void process(GameData gameData, World world) {
@@ -95,6 +99,28 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI 
 			bullet.setY(gameData.getDisplayHeight());
 		} else if (bullet.getY() > gameData.getDisplayHeight()) {
 			bullet.setY(0);
+		}
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event.getEventType() == Event.EventType.COLLISION) {
+			Entity entityA = event.getEntityA();
+			Entity entityB = event.getEntityB();
+			if (entityA instanceof Bullet) {
+				event.getWorld().removeEntity(entityA);
+				if (((Bullet) entityA).getOwner().getType() != Entity.Type.ENEMY) {
+					Event scoreEvent = new Event(entityA, entityB, Event.EventType.SCORE_INCREMENT, event.getWorld());
+					eventBroker.notifyObservers(scoreEvent);
+				}
+			}
+			if (entityB instanceof Bullet) {
+				event.getWorld().removeEntity(entityB);
+				if (((Bullet) entityB).getOwner().getType() != Entity.Type.ENEMY) {
+					Event scoreEvent = new Event(entityB, entityA, Event.EventType.SCORE_INCREMENT, event.getWorld());
+					eventBroker.notifyObservers(scoreEvent);
+				}
+			}
 		}
 	}
 }

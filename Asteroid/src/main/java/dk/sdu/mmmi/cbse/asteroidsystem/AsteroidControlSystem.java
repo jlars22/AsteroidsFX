@@ -1,14 +1,15 @@
 package dk.sdu.mmmi.cbse.asteroidsystem;
 
 import dk.sdu.mmmi.cbse.common.asteroid.Asteroid;
-import dk.sdu.mmmi.cbse.common.asteroid.AsteroidSPI;
 import dk.sdu.mmmi.cbse.common.data.Entity;
+import dk.sdu.mmmi.cbse.common.data.Event;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
+import dk.sdu.mmmi.cbse.common.services.IObserver;
 import java.util.Random;
 
-public class AsteroidControlSystem implements IEntityProcessingService, AsteroidSPI {
+public class AsteroidControlSystem implements IEntityProcessingService, IObserver {
 
 	private final Random random = new Random();
 	@Override
@@ -43,9 +44,29 @@ public class AsteroidControlSystem implements IEntityProcessingService, Asteroid
 	}
 
 	@Override
-	public void splitAsteroid(Entity entity, World world) {
+	public void onEvent(Event event) {
+		if (event.getEventType() == Event.EventType.COLLISION) {
+			Entity entityA = event.getEntityA();
+			Entity entityB = event.getEntityB();
+			if (entityA instanceof Asteroid && entityB instanceof Asteroid) {
+				return;
+			}
+			if (entityA instanceof Asteroid) {
+				splitAsteroid(entityA, event.getWorld());
+			}
+			if (entityB instanceof Asteroid) {
+				splitAsteroid(entityB, event.getWorld());
+			}
+		}
+	}
+
+	private void splitAsteroid(Entity entity, World world) {
 		Asteroid asteroid = (Asteroid) entity;
+		entity.setHealth(entity.getHealth() - 1);
 		world.removeEntity(asteroid);
+		if (asteroid.getHealth() == 0) {
+			return;
+		}
 		for (int i = 0; i < 2; i++) {
 			Asteroid newAsteroid = new Asteroid(asteroid.getSize() - 1);
 			newAsteroid.setX(asteroid.getX());

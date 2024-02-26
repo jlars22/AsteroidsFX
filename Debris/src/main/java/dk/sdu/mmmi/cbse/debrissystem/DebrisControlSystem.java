@@ -1,15 +1,16 @@
 package dk.sdu.mmmi.cbse.debrissystem;
 
 import dk.sdu.mmmi.cbse.common.data.Entity;
+import dk.sdu.mmmi.cbse.common.data.Event;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.debris.Debris;
-import dk.sdu.mmmi.cbse.common.debris.DebrisSPI;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
+import dk.sdu.mmmi.cbse.common.services.IObserver;
 import java.time.LocalTime;
 import java.util.Random;
 
-public class DebrisControlSystem implements IEntityProcessingService, DebrisSPI {
+public class DebrisControlSystem implements IEntityProcessingService, IObserver {
 
 	private final Random random = new Random();
 	@Override
@@ -26,7 +27,23 @@ public class DebrisControlSystem implements IEntityProcessingService, DebrisSPI 
 	}
 
 	@Override
-	public void createDebris(Entity entity, World world) {
+	public void onEvent(Event event) {
+		if (event.getEventType() == Event.EventType.COLLISION) {
+			Entity entityA = event.getEntityA();
+			Entity entityB = event.getEntityB();
+
+			// Make debris on every form of collission except for the bullet entity, the
+			// bullet should not leave debris only the thing it hits
+			if (entityA.getType() != Entity.Type.BULLET) {
+				makeDebris(entityA, event.getWorld());
+			}
+			if (entityB.getType() != Entity.Type.BULLET) {
+				makeDebris(entityB, event.getWorld());
+			}
+		}
+	}
+
+	private void makeDebris(Entity entity, World world) {
 		int debrisCount = random.nextInt(3, 7);
 		for (int i = 0; i < debrisCount; i++) {
 			Entity debris = new Debris();
