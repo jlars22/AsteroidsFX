@@ -1,4 +1,4 @@
-package dk.sdu.mmmi.cbse.enemysystem;
+package dk.sdu.mmmi.cbse.common.enemy;
 
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import java.time.LocalTime;

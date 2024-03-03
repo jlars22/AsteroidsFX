@@ -7,6 +7,8 @@ import dk.sdu.mmmi.cbse.common.data.Event;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.GameKeys;
 import dk.sdu.mmmi.cbse.common.data.World;
+import dk.sdu.mmmi.cbse.common.player.Player;
+import dk.sdu.mmmi.cbse.common.player.PlayerSPI;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
 import dk.sdu.mmmi.cbse.common.weapon.WeaponSPI;
@@ -14,11 +16,11 @@ import java.time.LocalTime;
 import java.util.Collection;
 import java.util.ServiceLoader;
 
-public class PlayerControlSystem implements IEntityProcessingService, IObserver {
+public class PlayerControlSystem implements IEntityProcessingService, IObserver, PlayerSPI {
 
 	@Override
 	public void process(GameData gameData, World world) {
-		handleRespawn(gameData, world);
+		respawnPlayer(gameData, world);
 		for (Entity player : world.getEntities(Player.class)) {
 			handleInput(gameData, world, player);
 			updatePosition(player);
@@ -43,7 +45,19 @@ public class PlayerControlSystem implements IEntityProcessingService, IObserver 
 		}
 	}
 
-	private void handleRespawn(GameData gameData, World world) {
+	@Override
+	public void resetPlayerPosition(GameData gameData, World world) {
+		for (Entity player : world.getEntities(Player.class)) {
+			world.removeEntity(gameData.getPlayer());
+			player.setX(gameData.getDisplayWidth() / 2);
+			player.setY(gameData.getDisplayHeight() / 2);
+			player.setDX(0);
+			player.setDY(0);
+			world.addEntity(gameData.getPlayer());
+		}
+	}
+
+	private void respawnPlayer(GameData gameData, World world) {
 		if (world.getEntities(Player.class).isEmpty()) {
 			Player player = (Player) gameData.getPlayer();
 			if (player.getHealth() == 0) {

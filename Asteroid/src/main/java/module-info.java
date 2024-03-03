@@ -1,3 +1,4 @@
+import dk.sdu.mmmi.cbse.common.asteroid.AsteroidSPI;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
@@ -9,4 +10,5 @@ module Asteroid {
 	provides IGamePluginService with dk.sdu.mmmi.cbse.asteroidsystem.AsteroidPlugin;
 	provides IEntityProcessingService with dk.sdu.mmmi.cbse.asteroidsystem.AsteroidControlSystem;
 	provides IObserver with dk.sdu.mmmi.cbse.asteroidsystem.AsteroidControlSystem;
+	provides AsteroidSPI with dk.sdu.mmmi.cbse.asteroidsystem.AsteroidPlugin;
 }

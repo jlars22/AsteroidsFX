@@ -3,6 +3,7 @@ package dk.sdu.mmmi.cbse.asteroidsystem;
 import dk.sdu.mmmi.cbse.common.asteroid.Asteroid;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.Event;
+import dk.sdu.mmmi.cbse.common.data.EventBroker;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
@@ -12,12 +13,18 @@ import java.util.Random;
 public class AsteroidControlSystem implements IEntityProcessingService, IObserver {
 
 	private final Random random = new Random();
+	private final EventBroker eventBroker = EventBroker.getInstance();
 	@Override
 	public void process(GameData gameData, World world) {
 		for (Entity entity : world.getEntities(Asteroid.class)) {
 			Asteroid asteroid = (Asteroid) entity;
 			handleTravel(asteroid);
 			handleBorders(gameData, asteroid);
+		}
+
+		if (world.getEntities(Asteroid.class).isEmpty()) {
+			Event event = new Event(Event.EventType.NEW_LEVEL, world, gameData);
+			eventBroker.notifyObservers(event);
 		}
 	}
 

@@ -18,7 +18,7 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 					continue;
 				}
 				if (checkCollision(entityA, entityB)) {
-					Event event = new Event(entityA, entityB, Event.EventType.COLLISION, world);
+					Event event = new Event(entityA, entityB, Event.EventType.COLLISION, world, gameData);
 					eventBroker.notifyObservers(event);
 				}
 			}

@@ -30,6 +30,9 @@
         <module>Debris</module>
         <module>Weapon</module>
         <module>CommonWeapon</module>
+        <module>Map</module>
+        <module>CommonPlayer</module>
+        <module>CommonEnemy</module>
     </modules>
     <properties>
         <java>java</java>

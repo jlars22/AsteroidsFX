@@ -7,6 +7,8 @@ import dk.sdu.mmmi.cbse.common.data.Event;
 import dk.sdu.mmmi.cbse.common.data.EventBroker;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
+import dk.sdu.mmmi.cbse.common.enemy.Enemy;
+import dk.sdu.mmmi.cbse.common.enemy.EnemySPI;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
 import dk.sdu.mmmi.cbse.common.weapon.WeaponSPI;
@@ -15,7 +17,7 @@ import java.util.Collection;
 import java.util.Random;
 import java.util.ServiceLoader;
 
-public class EnemyControlSystem implements IEntityProcessingService, IObserver {
+public class EnemyControlSystem implements IEntityProcessingService, IObserver, EnemySPI {
 	private final EventBroker eventBroker = EventBroker.getInstance();
 	private final Random random = new Random();
 
@@ -39,18 +41,27 @@ public class EnemyControlSystem implements IEntityProcessingService, IObserver {
 
 			if (entityA instanceof Enemy) {
 				if (entityB.getType() == Entity.Type.BULLET) {
-					Event scoreEvent = new Event(entityA, entityB, Event.EventType.SCORE_INCREMENT, event.getWorld());
+					Event scoreEvent = new Event(entityA, entityB, Event.EventType.SCORE_INCREMENT, event.getWorld(),
+							event.getGameData());
 					eventBroker.notifyObservers(scoreEvent);
 				}
 				event.getWorld().removeEntity(entityA);
 			}
 			if (entityB instanceof Enemy) {
 				if (entityB.getType() == Entity.Type.BULLET) {
-					Event scoreEvent = new Event(entityA, entityB, Event.EventType.SCORE_INCREMENT, event.getWorld());
+					Event scoreEvent = new Event(entityA, entityB, Event.EventType.SCORE_INCREMENT, event.getWorld(),
+							event.getGameData());
 					eventBroker.notifyObservers(scoreEvent);
 				}
 				event.getWorld().removeEntity(entityB);
 			}
+		}
+	}
+
+	@Override
+	public void resetEnemyPosition(GameData gameData, World world) {
+		for (Entity enemy : world.getEntities(Enemy.class)) {
+			setRandomPosition(gameData, (Enemy) enemy);
 		}
 	}
 
@@ -107,19 +118,6 @@ public class EnemyControlSystem implements IEntityProcessingService, IObserver {
 		enemy.setY(enemy.getY() + enemy.getDY());
 	}
 
-	/**
-	 * Calculates a new direction for the enemy based on its current velocity
-	 * components
-	 *
-	 * <p>
-	 * atan2 is used to determine the current direction of the enemy, and a random
-	 * adjustment angle is added to it
-	 *
-	 * @param enemy
-	 *            The enemy object for which the new direction is calculated
-	 * @return The new direction in radians, adjusted by a random angle within the
-	 *         range of -45 to 45 degrees
-	 */
 	private double getNewDirection(Enemy enemy) {
 		double currentDirection = Math.atan2(enemy.getDY(), enemy.getDX());
 		double adjustment = Math.toRadians(random.nextInt(-45, 45));

@@ -86,7 +86,8 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI,
 		if (((Bullet) entity).getOwner().getType() == Entity.Type.ENEMY)
 			return;
 
-		Event scoreEvent = new Event(entity, otherEntity, Event.EventType.SCORE_INCREMENT, event.getWorld());
+		Event scoreEvent = new Event(entity, otherEntity, Event.EventType.SCORE_INCREMENT, event.getWorld(),
+				event.getGameData());
 		eventBroker.notifyObservers(scoreEvent);
 	}
 }

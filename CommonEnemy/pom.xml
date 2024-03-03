@@ -8,28 +8,13 @@
         <artifactId>asteroids.jpms</artifactId>
         <version>1.0.1-SNAPSHOT</version>
     </parent>
-
-    <groupId>dk.sdu.mmmi.cbse.enemysystem</groupId>
-    <packaging>jar</packaging>
-    <artifactId>Enemy</artifactId>
-    <name>Enemy</name>
+<packaging>jar</packaging>
+    <artifactId>CommonEnemy</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>dk.sdu.mmmi.cbse</groupId>
             <artifactId>Common</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>dk.sdu.mmmi.cbse</groupId>
-            <artifactId>CommonWeapon</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>dk.sdu.mmmi.cbse</groupId>
-            <artifactId>CommonEnemy</artifactId>
             <version>1.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
