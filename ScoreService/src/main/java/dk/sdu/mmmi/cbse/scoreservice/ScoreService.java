@@ -3,6 +3,7 @@ package dk.sdu.mmmi.cbse.scoreservice;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.Event;
 import dk.sdu.mmmi.cbse.common.scoreservice.IScoreService;
+import dk.sdu.mmmi.cbse.common.data.Event.EventType;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,7 +35,6 @@ public class ScoreService implements IScoreService, IObserver {
 
 	@Override
 	public void onEvent(Event event) {
-		if (event.getEventType() == Event.EventType.SCORE_INCREMENT) {
 			Entity entityA = event.getEntityA();
 			Entity entityB = event.getEntityB();
 
@@ -50,6 +50,10 @@ public class ScoreService implements IScoreService, IObserver {
 					scoredEntities.add(entityB.getID());
 				}
 			}
-		}
+	}
+
+	@Override
+	public EventType getTopic() {
+		return EventType.SCORE_INCREMENT;
 	}
 }

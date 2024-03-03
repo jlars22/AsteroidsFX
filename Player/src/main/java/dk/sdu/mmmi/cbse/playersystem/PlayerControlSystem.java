@@ -12,126 +12,132 @@ import dk.sdu.mmmi.cbse.common.player.PlayerSPI;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
 import dk.sdu.mmmi.cbse.common.weapon.WeaponSPI;
+import dk.sdu.mmmi.cbse.common.data.Event.EventType;
+
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.ServiceLoader;
 
 public class PlayerControlSystem implements IEntityProcessingService, IObserver, PlayerSPI {
 
-	@Override
-	public void process(GameData gameData, World world) {
-		respawnPlayer(gameData, world);
-		for (Entity player : world.getEntities(Player.class)) {
-			handleInput(gameData, world, player);
-			updatePosition(player);
-			handleBorders(gameData, player);
-		}
-	}
+    @Override
+    public void process(GameData gameData, World world) {
+        respawnPlayer(gameData, world);
+        for (Entity player : world.getEntities(Player.class)) {
+            handleInput(gameData, world, player);
+            updatePosition(player);
+            handleBorders(gameData, player);
+        }
+    }
 
-	@Override
-	public void onEvent(Event event) {
-		if (event.getEventType() == Event.EventType.COLLISION) {
-			Entity entityA = event.getEntityA();
-			Entity entityB = event.getEntityB();
+    @Override
+    public void onEvent(Event event) {
+        Entity entityA = event.getEntityA();
+        Entity entityB = event.getEntityB();
 
-			if (entityA instanceof Player) {
-				event.getWorld().removeEntity(entityA);
-				entityA.setHealth(entityA.getHealth() - 1);
-			}
-			if (entityB instanceof Player) {
-				event.getWorld().removeEntity(entityB);
-				entityB.setHealth(entityB.getHealth() - 1);
-			}
-		}
-	}
+        if (entityA instanceof Player) {
+            event.getWorld().removeEntity(entityA);
+            entityA.setHealth(entityA.getHealth() - 1);
+        }
+        if (entityB instanceof Player) {
+            event.getWorld().removeEntity(entityB);
+            entityB.setHealth(entityB.getHealth() - 1);
+        }
 
-	@Override
-	public void resetPlayerPosition(GameData gameData, World world) {
-		for (Entity player : world.getEntities(Player.class)) {
-			world.removeEntity(gameData.getPlayer());
-			player.setX(gameData.getDisplayWidth() / 2);
-			player.setY(gameData.getDisplayHeight() / 2);
-			player.setDX(0);
-			player.setDY(0);
-			world.addEntity(gameData.getPlayer());
-		}
-	}
+    }
 
-	private void respawnPlayer(GameData gameData, World world) {
-		if (world.getEntities(Player.class).isEmpty()) {
-			Player player = (Player) gameData.getPlayer();
-			if (player.getHealth() == 0) {
-				System.out.println("Player is dead");
-				return;
-			}
-			if (player.getRespawnTime() == null) {
-				player.setRespawnTime(LocalTime.now());
-			} else if (LocalTime.now().isAfter(player.getRespawnTime().plusSeconds(3))) {
-				player.setX(gameData.getDisplayWidth() / 2);
-				player.setY(gameData.getDisplayHeight() / 2);
-				player.setDX(0);
-				player.setDY(0);
-				world.addEntity(gameData.getPlayer());
-				player.setRespawnTime(null);
-			}
-		}
-	}
+    @Override
+    public EventType getTopic() {
+        return EventType.COLLISION;
+    }
 
-	private void handleInput(GameData gameData, World world, Entity player) {
-		double acceleration = 0;
+    @Override
+    public void resetPlayerPosition(GameData gameData, World world) {
+        for (Entity player : world.getEntities(Player.class)) {
+            world.removeEntity(gameData.getPlayer());
+            player.setX(gameData.getDisplayWidth() / 2);
+            player.setY(gameData.getDisplayHeight() / 2);
+            player.setDX(0);
+            player.setDY(0);
+            world.addEntity(gameData.getPlayer());
+        }
+    }
 
-		if (gameData.getKeys().isDown(GameKeys.LEFT)) {
-			player.setRotation(player.getRotation() - 2);
-		}
-		if (gameData.getKeys().isDown(GameKeys.RIGHT)) {
-			player.setRotation(player.getRotation() + 2);
-		}
-		if (gameData.getKeys().isDown(GameKeys.UP)) {
-			acceleration = 0.02;
-		}
-		if (gameData.getKeys().isPressed(GameKeys.SPACE)) {
-			fireBullet(world, player);
-		}
+    private void respawnPlayer(GameData gameData, World world) {
+        if (world.getEntities(Player.class).isEmpty()) {
+            Player player = (Player) gameData.getPlayer();
+            if (player.getHealth() == 0) {
+                System.out.println("Player is dead");
+                return;
+            }
+            if (player.getRespawnTime() == null) {
+                player.setRespawnTime(LocalTime.now());
+            } else if (LocalTime.now().isAfter(player.getRespawnTime().plusSeconds(3))) {
+                player.setX(gameData.getDisplayWidth() / 2);
+                player.setY(gameData.getDisplayHeight() / 2);
+                player.setDX(0);
+                player.setDY(0);
+                world.addEntity(gameData.getPlayer());
+                player.setRespawnTime(null);
+            }
+        }
+    }
 
-		applyAcceleration(player, acceleration);
-	}
+    private void handleInput(GameData gameData, World world, Entity player) {
+        double acceleration = 0;
 
-	private void applyAcceleration(Entity player, double acceleration) {
-		double deceleration = 0.995;
-		double changeX = Math.cos(Math.toRadians(player.getRotation())) * acceleration;
-		double changeY = Math.sin(Math.toRadians(player.getRotation())) * acceleration;
+        if (gameData.getKeys().isDown(GameKeys.LEFT)) {
+            player.setRotation(player.getRotation() - 2);
+        }
+        if (gameData.getKeys().isDown(GameKeys.RIGHT)) {
+            player.setRotation(player.getRotation() + 2);
+        }
+        if (gameData.getKeys().isDown(GameKeys.UP)) {
+            acceleration = 0.02;
+        }
+        if (gameData.getKeys().isPressed(GameKeys.SPACE)) {
+            fireBullet(world, player);
+        }
 
-		player.setDX((player.getDX() + changeX) * deceleration);
-		player.setDY((player.getDY() + changeY) * deceleration);
-	}
+        applyAcceleration(player, acceleration);
+    }
 
-	private void updatePosition(Entity player) {
-		player.setX(player.getX() + player.getDX());
-		player.setY(player.getY() + player.getDY());
-	}
+    private void applyAcceleration(Entity player, double acceleration) {
+        double deceleration = 0.995;
+        double changeX = Math.cos(Math.toRadians(player.getRotation())) * acceleration;
+        double changeY = Math.sin(Math.toRadians(player.getRotation())) * acceleration;
 
-	private void handleBorders(GameData gameData, Entity player) {
-		if (player.getX() < 0) {
-			player.setX(gameData.getDisplayWidth());
-		} else if (player.getX() > gameData.getDisplayWidth()) {
-			player.setX(0);
-		}
+        player.setDX((player.getDX() + changeX) * deceleration);
+        player.setDY((player.getDY() + changeY) * deceleration);
+    }
 
-		if (player.getY() < 0) {
-			player.setY(gameData.getDisplayHeight());
-		} else if (player.getY() > gameData.getDisplayHeight()) {
-			player.setY(0);
-		}
-	}
+    private void updatePosition(Entity player) {
+        player.setX(player.getX() + player.getDX());
+        player.setY(player.getY() + player.getDY());
+    }
 
-	private void fireBullet(World world, Entity player) {
-		getWeaponSPIs().stream().findFirst().ifPresent(spi -> {
-			spi.shoot(player, world);
-		});
-	}
+    private void handleBorders(GameData gameData, Entity player) {
+        if (player.getX() < 0) {
+            player.setX(gameData.getDisplayWidth());
+        } else if (player.getX() > gameData.getDisplayWidth()) {
+            player.setX(0);
+        }
 
-	private Collection<? extends WeaponSPI> getWeaponSPIs() {
-		return ServiceLoader.load(WeaponSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
-	}
+        if (player.getY() < 0) {
+            player.setY(gameData.getDisplayHeight());
+        } else if (player.getY() > gameData.getDisplayHeight()) {
+            player.setY(0);
+        }
+    }
+
+    private void fireBullet(World world, Entity player) {
+        getWeaponSPIs().stream().findFirst().ifPresent(spi -> {
+            spi.shoot(player, world);
+        });
+    }
+
+    private Collection<? extends WeaponSPI> getWeaponSPIs() {
+        return ServiceLoader.load(WeaponSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+    }
 
 }

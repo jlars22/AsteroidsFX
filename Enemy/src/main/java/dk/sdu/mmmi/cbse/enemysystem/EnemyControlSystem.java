@@ -10,6 +10,7 @@ import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.enemy.Enemy;
 import dk.sdu.mmmi.cbse.common.enemy.EnemySPI;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
+import dk.sdu.mmmi.cbse.common.data.Event.EventType;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
 import dk.sdu.mmmi.cbse.common.weapon.WeaponSPI;
 import java.time.LocalTime;
@@ -35,7 +36,6 @@ public class EnemyControlSystem implements IEntityProcessingService, IObserver, 
 
 	@Override
 	public void onEvent(Event event) {
-		if (event.getEventType() == Event.EventType.COLLISION) {
 			Entity entityA = event.getEntityA();
 			Entity entityB = event.getEntityB();
 
@@ -43,7 +43,7 @@ public class EnemyControlSystem implements IEntityProcessingService, IObserver, 
 				if (entityB.getType() == Entity.Type.BULLET) {
 					Event scoreEvent = new Event(entityA, entityB, Event.EventType.SCORE_INCREMENT, event.getWorld(),
 							event.getGameData());
-					eventBroker.notifyObservers(scoreEvent);
+					eventBroker.publish(scoreEvent);
 				}
 				event.getWorld().removeEntity(entityA);
 			}
@@ -51,11 +51,16 @@ public class EnemyControlSystem implements IEntityProcessingService, IObserver, 
 				if (entityB.getType() == Entity.Type.BULLET) {
 					Event scoreEvent = new Event(entityA, entityB, Event.EventType.SCORE_INCREMENT, event.getWorld(),
 							event.getGameData());
-					eventBroker.notifyObservers(scoreEvent);
+					eventBroker.publish(scoreEvent);
 				}
 				event.getWorld().removeEntity(entityB);
 			}
-		}
+
+	}
+
+	@Override
+	public EventType getTopic() {
+		return EventType.COLLISION;
 	}
 
 	@Override

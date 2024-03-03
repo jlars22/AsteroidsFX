@@ -9,6 +9,7 @@ import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
+import dk.sdu.mmmi.cbse.common.data.Event.EventType;
 
 public class BulletControlSystem implements IEntityProcessingService, BulletSPI, IObserver {
 
@@ -71,11 +72,13 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI,
 
 	@Override
 	public void onEvent(Event event) {
-		if (event.getEventType() != Event.EventType.COLLISION)
-			return;
-
 		handleBulletCollision(event.getEntityA(), event.getEntityB(), event);
 		handleBulletCollision(event.getEntityB(), event.getEntityA(), event);
+	}
+
+	@Override
+	public EventType getTopic() {
+		return EventType.COLLISION;
 	}
 
 	private void handleBulletCollision(Entity entity, Entity otherEntity, Event event) {
@@ -88,6 +91,6 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI,
 
 		Event scoreEvent = new Event(entity, otherEntity, Event.EventType.SCORE_INCREMENT, event.getWorld(),
 				event.getGameData());
-		eventBroker.notifyObservers(scoreEvent);
+		eventBroker.publish(scoreEvent);
 	}
 }

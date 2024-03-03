@@ -10,6 +10,7 @@ import dk.sdu.mmmi.cbse.common.enemy.EnemySPI;
 import dk.sdu.mmmi.cbse.common.player.PlayerSPI;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
+import dk.sdu.mmmi.cbse.common.data.Event.EventType;
 import java.util.Collection;
 import java.util.ServiceLoader;
 
@@ -29,18 +30,20 @@ public class MapPlugin implements IGamePluginService, IObserver {
 
 	@Override
 	public void onEvent(Event event) {
-		if (event.getEventType() == Event.EventType.NEW_LEVEL) {
 			level++;
 			asteroidsCount += 3;
 			resetPlayer(event.getGameData(), event.getWorld());
 			resetEnemy(event.getGameData(), event.getWorld());
 			createAsteroids(event.getWorld(), event.getGameData());
-		}
+	}
+
+	@Override
+	public EventType getTopic() {
+		return EventType.NEW_LEVEL;
 	}
 
 	private void createAsteroids(World world, GameData gameData) {
 		for (AsteroidSPI asteroidSPI : getAsteroidSPIs()) {
-			System.out.println("Creating " + asteroidsCount + " asteroids");
 			asteroidSPI.createAsteroid(asteroidsCount, world, gameData);
 		}
 	}

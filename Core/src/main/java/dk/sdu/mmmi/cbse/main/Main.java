@@ -166,7 +166,10 @@ public class Main extends Application {
 	}
 
 	private void loadObservers() {
-		ServiceLoader.load(IObserver.class).forEach(eventBroker::addObserver);
+		ServiceLoader<IObserver> loader = ServiceLoader.load(IObserver.class);
+		for (IObserver observer : loader) {
+			eventBroker.addObserver(observer.getTopic(), observer);
+		}
 	}
 
 	private Collection<? extends IGamePluginService> getPluginServices() {

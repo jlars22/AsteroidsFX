@@ -8,6 +8,7 @@ import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
+import dk.sdu.mmmi.cbse.common.data.Event.EventType;
 import java.util.Random;
 
 public class AsteroidControlSystem implements IEntityProcessingService, IObserver {
@@ -24,7 +25,7 @@ public class AsteroidControlSystem implements IEntityProcessingService, IObserve
 
 		if (world.getEntities(Asteroid.class).isEmpty()) {
 			Event event = new Event(Event.EventType.NEW_LEVEL, world, gameData);
-			eventBroker.notifyObservers(event);
+			eventBroker.publish(event);
 		}
 	}
 
@@ -52,7 +53,7 @@ public class AsteroidControlSystem implements IEntityProcessingService, IObserve
 
 	@Override
 	public void onEvent(Event event) {
-		if (event.getEventType() == Event.EventType.COLLISION) {
+
 			Entity entityA = event.getEntityA();
 			Entity entityB = event.getEntityB();
 			if (entityA instanceof Asteroid && entityB instanceof Asteroid) {
@@ -64,7 +65,12 @@ public class AsteroidControlSystem implements IEntityProcessingService, IObserve
 			if (entityB instanceof Asteroid) {
 				splitAsteroid(entityB, event.getWorld());
 			}
-		}
+
+	}
+
+	@Override
+	public EventType getTopic() {
+		return EventType.COLLISION;
 	}
 
 	private void splitAsteroid(Entity entity, World world) {
