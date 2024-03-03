@@ -13,26 +13,26 @@
     <modules>
         <module>Core</module>
         <module>Common</module>
-        <module>Player</module>
-        <module>Bullet</module>
-        <module>CommonBullet</module>
-        <module>Enemy</module>
-        <module>Collision</module>
-        <module>Asteroid</module>
         <module>CommonAsteroid</module>
-        <module>CommonUIRenderingService</module>
-        <module>UIRenderingService</module>
-        <module>CommonEntityStylingService</module>
-        <module>EntityStylingService</module>
-        <module>CommonScoreService</module>
-        <module>ScoreService</module>
+        <module>CommonBullet</module>
         <module>CommonDebris</module>
-        <module>Debris</module>
-        <module>Weapon</module>
-        <module>CommonWeapon</module>
-        <module>Map</module>
-        <module>CommonPlayer</module>
         <module>CommonEnemy</module>
+        <module>CommonEntityStylingService</module>
+        <module>CommonPlayer</module>
+        <module>CommonScoreService</module>
+        <module>CommonUIRenderingService</module>
+        <module>CommonWeapon</module>
+        <module>Asteroid</module>
+        <module>Bullet</module>
+        <module>Collision</module>
+        <module>Debris</module>
+        <module>Enemy</module>
+        <module>EntityStylingService</module>
+        <module>Map</module>
+        <module>Player</module>
+        <module>ScoreService</module>
+        <module>UIRenderingService</module>
+        <module>Weapon</module>
     </modules>
     <properties>
         <java>java</java>
