@@ -34,8 +34,7 @@ public class ScoreService implements IScoreService, IObserver {
 
 	@Override
 	public void onEvent(Event event) {
-		// TODO: If enemy collides with Asteroid, the score should not be incremented
-		if (event.getEventType() == Event.EventType.COLLISION) {
+		if (event.getEventType() == Event.EventType.SCORE_INCREMENT) {
 			Entity entityA = event.getEntityA();
 			Entity entityB = event.getEntityB();
 

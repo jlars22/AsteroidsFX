@@ -14,13 +14,11 @@ import java.util.Collection;
 import java.util.ServiceLoader;
 
 public class MapPlugin implements IGamePluginService, IObserver {
-	private int level;
-	private int asteroidsCount;
+	private int level = 1;
+	private int asteroidsCount = 3;
 
 	@Override
 	public void start(GameData gameData, World world) {
-		this.level = 1;
-		this.asteroidsCount = 3;
 		createAsteroids(world, gameData);
 	}
 
