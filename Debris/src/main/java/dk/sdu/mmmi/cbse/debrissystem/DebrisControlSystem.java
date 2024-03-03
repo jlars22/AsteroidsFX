@@ -2,12 +2,12 @@ package dk.sdu.mmmi.cbse.debrissystem;
 
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.Event;
+import dk.sdu.mmmi.cbse.common.data.Event.EventType;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.debris.Debris;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
-import dk.sdu.mmmi.cbse.common.data.Event.EventType;
 import java.time.LocalTime;
 import java.util.Random;
 
@@ -29,15 +29,15 @@ public class DebrisControlSystem implements IEntityProcessingService, IObserver 
 
 	@Override
 	public void onEvent(Event event) {
-			Entity entityA = event.getEntityA();
-			Entity entityB = event.getEntityB();
+		Entity entityA = event.getEntityA();
+		Entity entityB = event.getEntityB();
 
-			if (entityA.getType() != Entity.Type.BULLET) {
-				makeDebris(entityA, event.getWorld());
-			}
-			if (entityB.getType() != Entity.Type.BULLET) {
-				makeDebris(entityB, event.getWorld());
-			}
+		if (entityA.getType() != Entity.Type.BULLET) {
+			makeDebris(entityA, event.getWorld());
+		}
+		if (entityB.getType() != Entity.Type.BULLET) {
+			makeDebris(entityB, event.getWorld());
+		}
 
 	}
 

@@ -4,13 +4,13 @@ import static java.util.stream.Collectors.toList;
 
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.Event;
+import dk.sdu.mmmi.cbse.common.data.Event.EventType;
 import dk.sdu.mmmi.cbse.common.data.EventBroker;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.enemy.Enemy;
 import dk.sdu.mmmi.cbse.common.enemy.EnemySPI;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
-import dk.sdu.mmmi.cbse.common.data.Event.EventType;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
 import dk.sdu.mmmi.cbse.common.weapon.WeaponSPI;
 import java.time.LocalTime;
@@ -36,25 +36,25 @@ public class EnemyControlSystem implements IEntityProcessingService, IObserver, 
 
 	@Override
 	public void onEvent(Event event) {
-			Entity entityA = event.getEntityA();
-			Entity entityB = event.getEntityB();
+		Entity entityA = event.getEntityA();
+		Entity entityB = event.getEntityB();
 
-			if (entityA instanceof Enemy) {
-				if (entityB.getType() == Entity.Type.BULLET) {
-					Event scoreEvent = new Event(entityA, entityB, Event.EventType.SCORE_INCREMENT, event.getWorld(),
-							event.getGameData());
-					eventBroker.publish(scoreEvent);
-				}
-				event.getWorld().removeEntity(entityA);
+		if (entityA instanceof Enemy) {
+			if (entityB.getType() == Entity.Type.BULLET) {
+				Event scoreEvent = new Event(entityA, entityB, Event.EventType.SCORE_INCREMENT, event.getWorld(),
+						event.getGameData());
+				eventBroker.publish(scoreEvent);
 			}
-			if (entityB instanceof Enemy) {
-				if (entityB.getType() == Entity.Type.BULLET) {
-					Event scoreEvent = new Event(entityA, entityB, Event.EventType.SCORE_INCREMENT, event.getWorld(),
-							event.getGameData());
-					eventBroker.publish(scoreEvent);
-				}
-				event.getWorld().removeEntity(entityB);
+			event.getWorld().removeEntity(entityA);
+		}
+		if (entityB instanceof Enemy) {
+			if (entityB.getType() == Entity.Type.BULLET) {
+				Event scoreEvent = new Event(entityA, entityB, Event.EventType.SCORE_INCREMENT, event.getWorld(),
+						event.getGameData());
+				eventBroker.publish(scoreEvent);
 			}
+			event.getWorld().removeEntity(entityB);
+		}
 
 	}
 

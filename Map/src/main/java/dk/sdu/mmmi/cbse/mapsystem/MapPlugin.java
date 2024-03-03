@@ -4,13 +4,13 @@ import static java.util.stream.Collectors.toList;
 
 import dk.sdu.mmmi.cbse.common.asteroid.AsteroidSPI;
 import dk.sdu.mmmi.cbse.common.data.Event;
+import dk.sdu.mmmi.cbse.common.data.Event.EventType;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.enemy.EnemySPI;
 import dk.sdu.mmmi.cbse.common.player.PlayerSPI;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
-import dk.sdu.mmmi.cbse.common.data.Event.EventType;
 import java.util.Collection;
 import java.util.ServiceLoader;
 
@@ -30,11 +30,11 @@ public class MapPlugin implements IGamePluginService, IObserver {
 
 	@Override
 	public void onEvent(Event event) {
-			level++;
-			asteroidsCount += 3;
-			resetPlayer(event.getGameData(), event.getWorld());
-			resetEnemy(event.getGameData(), event.getWorld());
-			createAsteroids(event.getWorld(), event.getGameData());
+		level++;
+		asteroidsCount += 3;
+		resetPlayer(event.getGameData(), event.getWorld());
+		resetEnemy(event.getGameData(), event.getWorld());
+		createAsteroids(event.getWorld(), event.getGameData());
 	}
 
 	@Override

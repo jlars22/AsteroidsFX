@@ -3,12 +3,12 @@ package dk.sdu.mmmi.cbse.asteroidsystem;
 import dk.sdu.mmmi.cbse.common.asteroid.Asteroid;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.Event;
+import dk.sdu.mmmi.cbse.common.data.Event.EventType;
 import dk.sdu.mmmi.cbse.common.data.EventBroker;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
-import dk.sdu.mmmi.cbse.common.data.Event.EventType;
 import java.util.Random;
 
 public class AsteroidControlSystem implements IEntityProcessingService, IObserver {
@@ -54,17 +54,17 @@ public class AsteroidControlSystem implements IEntityProcessingService, IObserve
 	@Override
 	public void onEvent(Event event) {
 
-			Entity entityA = event.getEntityA();
-			Entity entityB = event.getEntityB();
-			if (entityA instanceof Asteroid && entityB instanceof Asteroid) {
-				return;
-			}
-			if (entityA instanceof Asteroid) {
-				splitAsteroid(entityA, event.getWorld());
-			}
-			if (entityB instanceof Asteroid) {
-				splitAsteroid(entityB, event.getWorld());
-			}
+		Entity entityA = event.getEntityA();
+		Entity entityB = event.getEntityB();
+		if (entityA instanceof Asteroid && entityB instanceof Asteroid) {
+			return;
+		}
+		if (entityA instanceof Asteroid) {
+			splitAsteroid(entityA, event.getWorld());
+		}
+		if (entityB instanceof Asteroid) {
+			splitAsteroid(entityB, event.getWorld());
+		}
 
 	}
 

@@ -2,8 +2,8 @@ package dk.sdu.mmmi.cbse.scoreservice;
 
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.Event;
-import dk.sdu.mmmi.cbse.common.scoreservice.IScoreService;
 import dk.sdu.mmmi.cbse.common.data.Event.EventType;
+import dk.sdu.mmmi.cbse.common.scoreservice.IScoreService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,21 +35,21 @@ public class ScoreService implements IScoreService, IObserver {
 
 	@Override
 	public void onEvent(Event event) {
-			Entity entityA = event.getEntityA();
-			Entity entityB = event.getEntityB();
+		Entity entityA = event.getEntityA();
+		Entity entityB = event.getEntityB();
 
-			if (entityA.getType() == Entity.Type.ENEMY || entityA.getType() == Entity.Type.ASTEROID) {
-				if (!scoredEntities.contains(entityA.getID())) {
-					addScore(entityA);
-					scoredEntities.add(entityA.getID());
-				}
+		if (entityA.getType() == Entity.Type.ENEMY || entityA.getType() == Entity.Type.ASTEROID) {
+			if (!scoredEntities.contains(entityA.getID())) {
+				addScore(entityA);
+				scoredEntities.add(entityA.getID());
 			}
-			if (entityB.getType() == Entity.Type.ENEMY || entityB.getType() == Entity.Type.ASTEROID) {
-				if (!scoredEntities.contains(entityB.getID())) {
-					addScore(entityB);
-					scoredEntities.add(entityB.getID());
-				}
+		}
+		if (entityB.getType() == Entity.Type.ENEMY || entityB.getType() == Entity.Type.ASTEROID) {
+			if (!scoredEntities.contains(entityB.getID())) {
+				addScore(entityB);
+				scoredEntities.add(entityB.getID());
 			}
+		}
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package dk.sdu.mmmi.cbse.common.data;
 
-import dk.sdu.mmmi.cbse.common.services.IObserver;
 import dk.sdu.mmmi.cbse.common.data.Event.EventType;
+import dk.sdu.mmmi.cbse.common.services.IObserver;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
