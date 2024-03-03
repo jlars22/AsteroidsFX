@@ -2,7 +2,6 @@ package dk.sdu.mmmi.cbse.playersystem;
 
 import static java.util.stream.Collectors.toList;
 
-import dk.sdu.mmmi.cbse.common.bullet.BulletSPI;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.Event;
 import dk.sdu.mmmi.cbse.common.data.GameData;
@@ -10,6 +9,7 @@ import dk.sdu.mmmi.cbse.common.data.GameKeys;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
+import dk.sdu.mmmi.cbse.common.weapon.WeaponSPI;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.ServiceLoader;
@@ -76,7 +76,7 @@ public class PlayerControlSystem implements IEntityProcessingService, IObserver 
 			acceleration = 0.02;
 		}
 		if (gameData.getKeys().isPressed(GameKeys.SPACE)) {
-			fireBullet(gameData, world, player);
+			fireBullet(world, player);
 		}
 
 		applyAcceleration(player, acceleration);
@@ -110,14 +110,14 @@ public class PlayerControlSystem implements IEntityProcessingService, IObserver 
 		}
 	}
 
-	private void fireBullet(GameData gameData, World world, Entity player) {
-		getBulletSPIs().stream().findFirst().ifPresent(spi -> {
-			world.addEntity(spi.createBullet(player));
+	private void fireBullet(World world, Entity player) {
+		getWeaponSPIs().stream().findFirst().ifPresent(spi -> {
+			spi.shoot(player, world);
 		});
 	}
 
-	private Collection<? extends BulletSPI> getBulletSPIs() {
-		return ServiceLoader.load(BulletSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+	private Collection<? extends WeaponSPI> getWeaponSPIs() {
+		return ServiceLoader.load(WeaponSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
 	}
 
 }

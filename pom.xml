@@ -28,6 +28,8 @@
         <module>ScoreService</module>
         <module>CommonDebris</module>
         <module>Debris</module>
+        <module>Weapon</module>
+        <module>CommonWeapon</module>
     </modules>
     <properties>
         <java>java</java>

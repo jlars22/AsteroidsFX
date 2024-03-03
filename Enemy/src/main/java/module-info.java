@@ -5,9 +5,9 @@ import dk.sdu.mmmi.cbse.common.services.IObserver;
 module Enemy {
 	exports dk.sdu.mmmi.cbse.enemysystem;
 	requires Common;
-	requires CommonBullet;
+	requires CommonWeapon;
 
-	uses dk.sdu.mmmi.cbse.common.bullet.BulletSPI;
+	uses dk.sdu.mmmi.cbse.common.weapon.WeaponSPI;
 
 	provides IGamePluginService with dk.sdu.mmmi.cbse.enemysystem.EnemyPlugin;
 	provides IEntityProcessingService with dk.sdu.mmmi.cbse.enemysystem.EnemyControlSystem;

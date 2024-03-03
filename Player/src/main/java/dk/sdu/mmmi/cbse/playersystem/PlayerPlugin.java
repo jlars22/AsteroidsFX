@@ -7,11 +7,6 @@ import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 
 public class PlayerPlugin implements IGamePluginService {
 
-	private Entity player;
-
-	public PlayerPlugin() {
-	}
-
 	@Override
 	public void start(GameData gameData, World world) {
 		Entity player = createPlayerShip(gameData);
@@ -28,7 +23,10 @@ public class PlayerPlugin implements IGamePluginService {
 
 	@Override
 	public void stop(GameData gameData, World world) {
-		// Remove entities
-		world.removeEntity(player);
+		for (Entity e : world.getEntities()) {
+			if (e.getClass() == Player.class) {
+				world.removeEntity(e);
+			}
+		}
 	}
 }

@@ -2,7 +2,6 @@ package dk.sdu.mmmi.cbse.enemysystem;
 
 import static java.util.stream.Collectors.toList;
 
-import dk.sdu.mmmi.cbse.common.bullet.BulletSPI;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.Event;
 import dk.sdu.mmmi.cbse.common.data.EventBroker;
@@ -10,6 +9,7 @@ import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
+import dk.sdu.mmmi.cbse.common.weapon.WeaponSPI;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Random;
@@ -25,7 +25,7 @@ public class EnemyControlSystem implements IEntityProcessingService, IObserver {
 
 		for (Entity entity : world.getEntities(Enemy.class)) {
 			Enemy enemy = (Enemy) entity;
-			startFiring(gameData, world, enemy);
+			startFiring(world, enemy);
 			startMovement(enemy);
 			handleBorders(gameData, enemy);
 		}
@@ -138,13 +138,12 @@ public class EnemyControlSystem implements IEntityProcessingService, IObserver {
 		return true;
 	}
 
-	private void startFiring(GameData gameData, World world, Enemy enemy) {
+	private void startFiring(World world, Enemy enemy) {
 		LocalTime currentTime = LocalTime.now();
 		LocalTime lastTimeFired = enemy.getLastTimeFired();
 
 		if (lastTimeFired == null || currentTime.isAfter(lastTimeFired.plusSeconds(3))) {
-			getBulletSPIs().stream().findFirst()
-					.ifPresent(spi -> world.addEntity(spi.createBullet(enemy, random.nextDouble(360))));
+			getWeaponSPIs().stream().findFirst().ifPresent(spi -> spi.shoot(enemy, world));
 			enemy.setLastTimeFired(currentTime);
 		}
 	}
@@ -176,8 +175,8 @@ public class EnemyControlSystem implements IEntityProcessingService, IObserver {
 		}
 	}
 
-	private Collection<? extends BulletSPI> getBulletSPIs() {
-		return ServiceLoader.load(BulletSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+	private Collection<? extends WeaponSPI> getWeaponSPIs() {
+		return ServiceLoader.load(WeaponSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
 	}
 
 }

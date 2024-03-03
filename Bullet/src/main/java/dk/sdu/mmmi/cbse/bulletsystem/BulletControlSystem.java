@@ -41,11 +41,6 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI,
 	}
 
 	@Override
-	public Entity createBullet(Entity shooter) {
-		return createBullet(shooter, shooter.getRotation());
-	}
-
-	@Override
 	public Entity createBullet(Entity shooter, double rotation) {
 		Bullet bullet = new Bullet();
 		bullet.setRotation(rotation);
