@@ -9,6 +9,8 @@ import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
+
+import java.util.List;
 import java.util.Random;
 
 public class AsteroidControlSystem implements IEntityProcessingService, IObserver {
@@ -69,8 +71,8 @@ public class AsteroidControlSystem implements IEntityProcessingService, IObserve
 	}
 
 	@Override
-	public EventType getTopic() {
-		return EventType.COLLISION;
+	public List<EventType> getTopics() {
+		return List.of(EventType.COLLISION);
 	}
 
 	private void splitAsteroid(Entity entity, World world) {

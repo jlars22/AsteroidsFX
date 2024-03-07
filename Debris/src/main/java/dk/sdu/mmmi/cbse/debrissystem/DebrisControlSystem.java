@@ -8,6 +8,7 @@ import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Random;
 
 public class DebrisControlSystem implements IEntityProcessingService, IObserver {
@@ -41,8 +42,8 @@ public class DebrisControlSystem implements IEntityProcessingService, IObserver 
 	}
 
 	@Override
-	public EventType getTopic() {
-		return EventType.COLLISION;
+	public List<EventType> getTopics() {
+		return List.of(EventType.COLLISION);
 	}
 
 	private void makeDebris(Entity entity, World world) {

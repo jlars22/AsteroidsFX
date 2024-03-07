@@ -11,6 +11,8 @@ import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
 
+import java.util.List;
+
 public class BulletControlSystem implements IEntityProcessingService, BulletSPI, IObserver {
 
 	private final double OFFSET_DISTANCE = 40;
@@ -77,8 +79,8 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI,
 	}
 
 	@Override
-	public EventType getTopic() {
-		return EventType.COLLISION;
+	public List<EventType> getTopics() {
+		return List.of(EventType.COLLISION);
 	}
 
 	private void handleBulletCollision(Entity entity, Entity otherEntity, Event event) {

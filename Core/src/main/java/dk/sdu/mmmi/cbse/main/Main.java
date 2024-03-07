@@ -168,7 +168,7 @@ public class Main extends Application {
 	private void loadObservers() {
 		ServiceLoader<IObserver> loader = ServiceLoader.load(IObserver.class);
 		for (IObserver observer : loader) {
-			eventBroker.addObserver(observer.getTopic(), observer);
+			eventBroker.addObserver(observer.getTopics(), observer);
 		}
 	}
 

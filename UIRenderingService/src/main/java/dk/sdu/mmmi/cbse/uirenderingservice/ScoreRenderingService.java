@@ -16,34 +16,72 @@ public class ScoreRenderingService implements IUIRenderingService {
 
 	@Override
 	public void generate(Pane gameWindow) {
-		Text text = new Text(10, 30, "");
-		text.setFont(new Font(30));
-		text.setFill(Color.WHITE);
-		text.setId("scoreText");
-		gameWindow.getChildren().add(text);
+		Text scoreText = getScoreText();
+		Text levelText = getLevelText();
+
+		gameWindow.getChildren().addAll(scoreText, levelText);
 	}
+
+
 
 	@Override
 	public void update(Pane gameWindow, GameData gameData) {
-		if (gameData.getPlayer().getHealth() == 0) {
-			Text text = (Text) gameWindow.lookup("#scoreText");
-			if (text != null) {
-				gameWindow.getChildren().remove(text);
-			}
+		if (isGameOver(gameData)) {
+			removeLevelAndScoreText(gameWindow);
 			displayGameOverText(gameWindow);
 		}
 
-		Text text = (Text) gameWindow.lookup("#scoreText");
-		if (text != null) {
-			text.toFront();
-			text.setText(
-					String.valueOf(getScoreServices().stream().findFirst().map(IScoreService::getScore).orElse(0)));
+		Text scoreText = (Text) gameWindow.lookup("#scoreText");
+		Text levelText = (Text) gameWindow.lookup("#levelText");
+		if (scoreText != null && levelText != null) {
+			updateLevelAndScoreText(scoreText, levelText);
 		}
+	}
+
+	private  Text getLevelText() {
+		Text levelText = new Text(10, 30, "");
+		Font font = Font.loadFont(getClass().getResource("/pixelfont.ttf").toExternalForm(), 20);
+		levelText.setFont(font);
+		levelText.setFill(Color.WHITE);
+		levelText.setId("levelText");
+		return levelText;
+	}
+
+	private Text getScoreText() {
+		Text scoreText = new Text(10, 60, "LEVEL 0");
+		Font font = Font.loadFont(getClass().getResource("/pixelfont.ttf").toExternalForm(), 20);
+		scoreText.setFont(font);
+		scoreText.setFill(Color.WHITE);
+		scoreText.setId("scoreText");
+		return scoreText;
+	}
+
+	private void updateLevelAndScoreText(Text scoreText, Text levelText) {
+		scoreText.toFront();
+		levelText.toFront();
+		scoreText.setText(
+				String.valueOf(getScoreServices().stream().findFirst().map(IScoreService::getScore).orElse(0)));
+		levelText.setText(
+				"LEVEL " + getScoreServices().stream().findFirst().map(IScoreService::getLevel).orElse(0));
+	}
+
+	private void removeLevelAndScoreText(Pane gameWindow) {
+		Text scoreText = (Text) gameWindow.lookup("#scoreText");
+		Text levelText = (Text) gameWindow.lookup("#levelText");
+		if (scoreText != null && levelText != null) {
+			gameWindow.getChildren().remove(scoreText);
+			gameWindow.getChildren().remove(levelText);
+		}
+	}
+
+	private boolean isGameOver(GameData gameData) {
+		return gameData.getPlayer().getHealth() == 0;
 	}
 
 	private void displayGameOverText(Pane gameWindow) {
 		Text gameOverText = new Text("GAME OVER");
-		gameOverText.setFont(new Font(30));
+		Font gameOverFont = Font.loadFont(getClass().getResource("/pixelfont.ttf").toExternalForm(), 30);
+		gameOverText.setFont(gameOverFont);
 		gameOverText.setFill(Color.RED);
 		gameOverText.toFront();
 
@@ -52,9 +90,10 @@ public class ScoreRenderingService implements IUIRenderingService {
 		gameOverText.setTranslateX(centerX);
 		gameOverText.setTranslateY(centerY);
 
-		Text scoreText = new Text(
-				String.valueOf(getScoreServices().stream().findFirst().map(IScoreService::getScore).orElse(0)));
-		scoreText.setFont(new Font(20));
+		Text scoreText = new Text("SCORE " +
+				getScoreServices().stream().findFirst().map(IScoreService::getScore).orElse(0));
+		Font font = Font.loadFont(getClass().getResource("/pixelfont.ttf").toExternalForm(), 20);
+		scoreText.setFont(font);
 		scoreText.setFill(Color.WHITE);
 		scoreText.toFront();
 

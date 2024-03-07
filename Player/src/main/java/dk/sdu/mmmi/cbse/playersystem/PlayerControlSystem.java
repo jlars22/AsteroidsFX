@@ -15,6 +15,7 @@ import dk.sdu.mmmi.cbse.common.services.IObserver;
 import dk.sdu.mmmi.cbse.common.weapon.WeaponSPI;
 import java.time.LocalTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.ServiceLoader;
 
 public class PlayerControlSystem implements IEntityProcessingService, IObserver, PlayerSPI {
@@ -46,8 +47,8 @@ public class PlayerControlSystem implements IEntityProcessingService, IObserver,
 	}
 
 	@Override
-	public EventType getTopic() {
-		return EventType.COLLISION;
+	public List<EventType> getTopics() {
+		return List.of(EventType.COLLISION);
 	}
 
 	@Override

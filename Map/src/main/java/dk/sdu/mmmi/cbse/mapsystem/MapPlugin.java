@@ -12,6 +12,7 @@ import dk.sdu.mmmi.cbse.common.player.PlayerSPI;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
 import java.util.Collection;
+import java.util.List;
 import java.util.ServiceLoader;
 
 public class MapPlugin implements IGamePluginService, IObserver {
@@ -38,8 +39,8 @@ public class MapPlugin implements IGamePluginService, IObserver {
 	}
 
 	@Override
-	public EventType getTopic() {
-		return EventType.NEW_LEVEL;
+	public List<EventType> getTopics() {
+		return List.of(EventType.NEW_LEVEL);
 	}
 
 	private void createAsteroids(World world, GameData gameData) {
