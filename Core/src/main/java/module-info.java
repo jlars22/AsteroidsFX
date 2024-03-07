@@ -7,7 +7,6 @@ import dk.sdu.mmmi.cbse.common.uirenderingservice.IUIRenderingService;
 
 module Core {
 	requires Common;
-	requires CommonBullet;
 	requires javafx.graphics;
 	requires CommonUIRenderingService;
 	requires CommonEntityStylingService;
