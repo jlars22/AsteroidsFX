@@ -10,7 +10,6 @@ import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
-
 import java.util.List;
 
 public class BulletControlSystem implements IEntityProcessingService, BulletSPI, IObserver {

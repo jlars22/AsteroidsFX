@@ -45,7 +45,6 @@ public class ScoreService implements IScoreService, IObserver {
 		level.set(1);
 	}
 
-
 	@Override
 	public void onEvent(Event event) {
 		if (event.getEventType() == EventType.NEW_LEVEL) {
