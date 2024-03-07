@@ -15,7 +15,6 @@
         <module>Common</module>
         <module>CommonAsteroid</module>
         <module>CommonBullet</module>
-        <module>CommonDebris</module>
         <module>CommonEnemy</module>
         <module>CommonEntityStylingService</module>
         <module>CommonPlayer</module>

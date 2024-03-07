@@ -1,4 +1,4 @@
-package dk.sdu.mmmi.cbse.common.debris;
+package dk.sdu.mmmi.cbse.debrissystem;
 
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import java.time.LocalTime;
