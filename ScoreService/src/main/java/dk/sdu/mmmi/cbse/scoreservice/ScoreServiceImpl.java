@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ScoreService implements IScoreService, IObserver {
+public class ScoreServiceImpl implements IScoreService, IObserver {
 
 	private final Set<String> scoredEntities = new HashSet<>();
 	static AtomicInteger score = new AtomicInteger(0);
@@ -30,7 +30,6 @@ public class ScoreService implements IScoreService, IObserver {
 		return score.get();
 	}
 
-	@Override
 	public void resetScore() {
 		score.set(0);
 	}
@@ -40,7 +39,6 @@ public class ScoreService implements IScoreService, IObserver {
 		return level.get();
 	}
 
-	@Override
 	public void resetLevel() {
 		level.set(1);
 	}

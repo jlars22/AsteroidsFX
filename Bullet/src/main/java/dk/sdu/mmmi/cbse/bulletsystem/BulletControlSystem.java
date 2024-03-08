@@ -12,9 +12,8 @@ import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
 import java.util.List;
 
-public class BulletControlSystem implements IEntityProcessingService, BulletSPI, IObserver {
+public class BulletControlSystem implements IEntityProcessingService, IObserver {
 
-	private final double OFFSET_DISTANCE = 40;
 	private final int BULLET_SPEED = 3;
 	private final EventBroker eventBroker = EventBroker.getInstance();
 
@@ -40,21 +39,6 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI,
 		if (distanceTravelled > bullet.getMaxTravelDistance()) {
 			world.removeEntity(bullet);
 		}
-	}
-
-	@Override
-	public Entity createBullet(Entity shooter, double rotation) {
-		Bullet bullet = new Bullet();
-		bullet.setRotation(rotation);
-
-		double offsetX = Math.cos(Math.toRadians(bullet.getRotation())) * OFFSET_DISTANCE;
-		double offsetY = Math.sin(Math.toRadians(bullet.getRotation())) * OFFSET_DISTANCE;
-
-		bullet.setX(shooter.getX() + offsetX);
-		bullet.setY(shooter.getY() + offsetY);
-
-		bullet.setOwner(shooter);
-		return bullet;
 	}
 
 	private void handleBorders(GameData gameData, Bullet bullet) {

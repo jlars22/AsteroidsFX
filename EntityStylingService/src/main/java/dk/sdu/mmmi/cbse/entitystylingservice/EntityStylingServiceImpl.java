@@ -5,7 +5,7 @@ import dk.sdu.mmmi.cbse.common.entitystylingservice.IEntityStylingService;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
-public class EntityStylingService implements IEntityStylingService {
+public class EntityStylingServiceImpl implements IEntityStylingService {
 	@Override
 	public void styleEntity(Entity entity, Polygon polygon) {
 		setPolygonStylingByInstance(entity, polygon);

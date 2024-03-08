@@ -1,0 +1,206 @@
+@startuml
+title AsteroidsFX - Class Diagram
+skinparam groupInheritance 2
+hide empty members
+left to right direction
+
+'Common'
+package Common <<Frame>> {
+
+}
+
+package Common.data <<Frame>> {
+    class Entity
+    class Event {
+        Entity entityA
+        Entity entityB
+        EventType eventType
+        World world
+        GameData gameData
+    }
+    enum EventType {
+    COLLISION
+    SCORE_INCREMENT
+    NEW_LEVEL
+    GAME_OVER
+    }
+    class EventBroker {
+        EventBroker instance
+        Map<EventType, List<IObserver>> observers
+    }
+    class GameData
+    class GameKeys
+    class World
+}
+
+package Common.services <<Frame>> {
+    interface IEntityProcessingService {
+        process(GameData, World) : void
+    }
+    interface IPostEntityProcessingService {
+        process(GameData, World) : void
+    }
+    interface IGamePluginService {
+        stop(GameData, World) : void
+        start(GameData, World) : void
+    }
+    interface IObserver {
+        onEvent(Event) : void
+        getTopics() : List<EventType>
+    }
+}
+
+Event -- EventType : "1-1 "
+'--------------------------------------------------'
+
+'Enemy'
+package CommonEnemy <<Frame>> {
+    class Enemy extends Common.data.Entity
+    interface EnemySPI {
+        resetEnemyPosition(GameData, World) : void
+    }
+}
+
+package Enemy <<Frame>> {
+    class EnemyControlSystem implements CommonEnemy.EnemySPI, Common.services.IEntityProcessingService, Common.services.IObserver
+    class EnemyPlugin implements Common.services.IGamePluginService
+}
+
+'--------------------------------------------------'
+
+'EntityStylingService'
+package CommonEntityStylingService <<Frame>> {
+    interface IEntityStylingService {
+        styleEntity(Entity, Polygon) : void
+    }
+}
+
+package EntityStylingService <<Frame>> {
+    class EntityStylingServiceImpl implements CommonEntityStylingService.IEntityStylingService
+}
+
+'--------------------------------------------------'
+
+'Player'
+
+package CommonPlayer <<Frame>> {
+    class Player extends Common.data.Entity
+    interface PlayerSPI {
+        resetPlayerPosition(GameData, World) : void
+    }
+}
+
+package Player <<Frame>> {
+    class PlayerControlSystem implements CommonPlayer.PlayerSPI, Common.services.IEntityProcessingService, Common.services.IObserver
+    class PlayerPlugin implements Common.services.IGamePluginService
+}
+
+'--------------------------------------------------'
+
+'ScoreService'
+package CommonScoreService <<Frame>> {
+    interface IScoreService {
+        addScore(Entity) : void
+        getScore() : int
+        getLevel() : int
+    }
+}
+
+package ScoreService <<Frame>> {
+    class ScoreServiceImpl implements CommonScoreService.IScoreService, Common.services.IObserver
+}
+
+'--------------------------------------------------'
+
+'UIRenderingService'
+package CommonUIRenderingService <<Frame>> {
+    interface IUIRenderingService {
+        generate(Pane) : void
+    	update(Pane, GameData) : void
+    }
+}
+
+package UIRenderingService <<Frame>> {
+    class PlayerHealthRenderingService implements CommonUIRenderingService.IUIRenderingService
+    class ScoreRenderingService implements CommonUIRenderingService.IUIRenderingService
+}
+'--------------------------------------------------'
+
+'Weapon'
+package CommonWeapon <<Frame>> {
+    interface WeaponSPI {
+        shoot(Entity, World) : void
+    }
+}
+
+package Weapon <<Frame>> {
+    class WeaponPlugin implements Common.services.IGamePluginService, CommonWeapon.WeaponSPI
+}
+
+'--------------------------------------------------'
+
+'Core'
+package Core <<Frame>> {
+    class Main
+}
+'--------------------------------------------------'
+
+'Debris'
+package Debris <<Frame>> {
+    class Debris extends Common.data.Entity
+    class DebrisControlSystem implements Common.services.IEntityProcessingService, Common.services.IObserver
+}
+
+'--------------------------------------------------'
+
+'Map'
+package Map <<Frame>> {
+    class MapPlugin implements Common.services.IGamePluginService, Common.services.IObserver
+}
+
+'--------------------------------------------------'
+
+'Asteroid'
+package CommonAsteroid <<Frame>> {
+    class Asteroid extends Common.data.Entity
+    interface AsteroidSPI {
+        createAsteroid(int, World, GameData) : void
+    }
+}
+
+package Asteroid <<Frame>> {
+  class AsteroidControlSystem implements Common.services.IEntityProcessingService, Common.services.IObserver
+  class AsteroidPlugin implements Common.services.IGamePluginService, CommonAsteroid.AsteroidSPI
+}
+
+'--------------------------------------------------'
+
+'Bullet
+
+
+package CommonBullet <<Frame>> {
+    class Bullet extends Common.data.Entity
+    interface BulletSPI {
+        createBullet(Entity, double) : Entity
+    }
+}
+
+package Bullet <<Frame>> {
+    class BulletControlSystem implements Common.services.IEntityProcessingService, Common.services.IObserver
+    class BulletPlugin implements Common.services.IGamePluginService, CommonBullet.BulletSPI
+}
+
+'--------------------------------------------------'
+
+'Collision'
+package Collision <<Frame>> {
+    class CollisionControlSystem implements Common.services.IPostEntityProcessingService
+}
+
+'--------------------------------------------------'
+
+
+
+
+
+@enduml

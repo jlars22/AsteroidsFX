@@ -10,7 +10,7 @@ module Bullet {
 	requires CommonBullet;
 
 	provides IGamePluginService with BulletPlugin;
-	provides BulletSPI with BulletControlSystem;
+	provides BulletSPI with BulletPlugin;
 	provides IEntityProcessingService with BulletControlSystem;
 	provides IObserver with BulletControlSystem;
 }
