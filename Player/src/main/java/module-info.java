@@ -8,7 +8,6 @@ import dk.sdu.mmmi.cbse.playersystem.PlayerPlugin;
 
 module Player {
 	exports dk.sdu.mmmi.cbse.playersystem;
-	requires Common;
 	requires CommonWeapon;
 	requires CommonPlayer;
 

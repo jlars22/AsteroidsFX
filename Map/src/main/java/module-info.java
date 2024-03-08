@@ -6,7 +6,6 @@ import dk.sdu.mmmi.cbse.common.services.IObserver;
 import dk.sdu.mmmi.cbse.mapsystem.MapPlugin;
 
 module Map {
-	requires Common;
 	requires CommonAsteroid;
 	requires CommonPlayer;
 	requires CommonEnemy;

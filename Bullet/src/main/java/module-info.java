@@ -6,7 +6,6 @@ import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
 
 module Bullet {
-	requires Common;
 	requires CommonBullet;
 
 	provides IGamePluginService with BulletPlugin;

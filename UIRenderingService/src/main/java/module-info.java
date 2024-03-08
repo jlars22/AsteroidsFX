@@ -6,7 +6,6 @@ module UIRenderingService {
 	uses dk.sdu.mmmi.cbse.common.scoreservice.IScoreService;
 	requires CommonUIRenderingService;
 	requires javafx.graphics;
-	requires Common;
 	requires CommonScoreService;
 
 	provides IUIRenderingService with PlayerHealthRenderingService, ScoreRenderingService;

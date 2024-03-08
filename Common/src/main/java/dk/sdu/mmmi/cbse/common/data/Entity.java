@@ -20,7 +20,6 @@ public class Entity implements Serializable {
 	private double dy;
 	private double rotation;
 	private int health;
-	private LocalTime respawnTime;
 	private Type type;
 
 	public Entity(Type type, double[] polygonCoordinates) {
@@ -102,14 +101,6 @@ public class Entity implements Serializable {
 
 	public void setHealth(int health) {
 		this.health = health;
-	}
-
-	public LocalTime getRespawnTime() {
-		return respawnTime;
-	}
-
-	public void setRespawnTime(LocalTime respawnTime) {
-		this.respawnTime = respawnTime;
 	}
 
 	public Type getType() {

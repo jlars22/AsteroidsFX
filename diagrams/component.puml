@@ -1,41 +1,55 @@
 @startuml
-title AsteroidsFX - Component Diagram
+title
+<u>AsteroidsFX - Component Diagram</u>
+end title
+
+legend top
+<font color=red >Note</font>
+<i>Blue</i> components are those who are shared and meant to be used by any other component.
+<i>Green</i> component is the core/main component.
+end legend
+
 skinparam linetype ortho
-!pragma ratio 0.3
 skinparam component {
     FontName Arial
     FontSize 16
     FontStyle Bold
 }
 
-component [Asteroid]
-component [CommonWeapon] #Lightblue
-component [CommonPlayer] #Lightblue
-component [Bullet]
-component [Collision]
-component [Debris]
-component [Common] #Lightblue
-component [CommonAsteroid] #Lightblue
-component [CommonBullet] #Lightblue
-component [CommonEnemy] #Lightblue
-component [CommonScoreService] #Lightblue
-component [CommonEntityStylingService] #Lightblue
-component [CommonUIRenderingService] #Lightblue
-component [Core] #Lightgreen
-component [Enemy]
+
+together {
+    component [Asteroid]
+    component [Bullet]
+    component [Debris]
+    component [Collision]
+    component [Enemy]
+    component [Weapon]
+    component [Map]
+    component [ScoreService]
+    component [Player]
+    component [UIRenderingService]
+
+}
+
+together {
+    component [CommonWeapon] #Lightblue
+    component [Common] #Lightblue
+    component [CommonAsteroid] #Lightblue
+    component [CommonBullet] #Lightblue
+    component [CommonEnemy] #Lightblue
+    component [CommonScoreService] #Lightblue
+    component [CommonEntityStylingService] #Lightblue
+    component [CommonUIRenderingService] #Lightblue
+    component [CommonPlayer] #Lightblue
+}
+
 component [EntityStylingService]
-component [Map]
-component [Player]
-component [ScoreService]
-component [UIRenderingService]
-component [Weapon]
+component [Core] #Lightgreen
 
 'Asteroid'
-[Asteroid] --(0-- [Common]
 [Asteroid] -(0- [CommonAsteroid]
 
 'Bullet'
-[Bullet] --(0-- [Common]
 [Bullet] -(0- [CommonBullet]
 
 'Collision'
@@ -74,39 +88,31 @@ component [Weapon]
 [Debris] -(0-- [Common]
 
 'Enemy'
-[Enemy] --(0-- [Common]
 [Enemy] -(0- [CommonEnemy]
 [Enemy] -(0- [CommonWeapon]
 
 'EntityStylingService'
-[EntityStylingService] --(0-- [Common]
 [EntityStylingService] -(0- [CommonEntityStylingService]
 
 'Map'
-[Map] --(0-- [Common]
 [Map] -(0- [CommonAsteroid]
 [Map] -(0- [CommonPlayer]
 [Map] -(0- [CommonEnemy]
 
 'Player'
-[Player] --(0-- [Common]
 [Player] -(0- [CommonWeapon]
 [Player] -(0- [CommonPlayer]
 
 
 'ScoreService'
-[ScoreService] --(0-- [Common]
 [ScoreService] -(0- [CommonScoreService]
 
 'UIRenderingService'
-[UIRenderingService] --(0-- [Common]
 [UIRenderingService] -(0- [CommonUIRenderingService]
 [UIRenderingService] -(0- [CommonScoreService]
 
 'Weapon'
-[Weapon] --(0-- [Common]
 [Weapon] -(0- [CommonWeapon]
 [Weapon] -(0- [CommonBullet]
-
 
 @enduml

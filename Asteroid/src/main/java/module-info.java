@@ -6,7 +6,6 @@ import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
 
 module Asteroid {
-	requires Common;
 	requires CommonAsteroid;
 
 	provides IGamePluginService with AsteroidPlugin;
