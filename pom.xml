@@ -21,8 +21,6 @@
         <module>CommonScoreService</module>
         <module>CommonUIRenderingService</module>
         <module>CommonWeapon</module>
-        <module>Asteroid</module>
-        <module>Bullet</module>
         <module>Collision</module>
         <module>Debris</module>
         <module>Enemy</module>

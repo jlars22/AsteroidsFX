@@ -13,6 +13,12 @@ import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.uirenderingservice.IUIRenderingService;
+import java.lang.module.ModuleDescriptor;
+import java.lang.module.ModuleFinder;
+import java.lang.module.ModuleReference;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.Collection;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -33,13 +39,35 @@ public class Main extends Application {
 	private final Map<Entity, Polygon> polygons = new ConcurrentHashMap<>();
 	private final Pane gameWindow = new Pane();
 	private final EventBroker eventBroker = EventBroker.getInstance();
+	private static List<ModuleLayer> layers = new ArrayList<>();
 
 	public static void main(String[] args) {
+		loadJPMModules();
+
 		launch(Main.class);
+	}
+
+	private static void loadJPMModules() {
+		Path pluginsDir = Paths.get("plugins");
+		ModuleFinder pluginsFinder = ModuleFinder.of(pluginsDir);
+
+		pluginsFinder.findAll().stream().map(ModuleReference::descriptor).map(ModuleDescriptor::name)
+				.map(plugin -> createLayer(pluginsDir.toString(), plugin)).forEach(layers::add);
+	}
+
+	private static ModuleLayer createLayer(String from, String module) {
+		System.out.println("Layer created for module: " + module);
+
+		var finder = ModuleFinder.of(Paths.get(from));
+		var parent = ModuleLayer.boot();
+		var cf = parent.configuration().resolve(finder, ModuleFinder.of(), Set.of(module));
+
+		return parent.defineModulesWithOneLoader(cf, ClassLoader.getSystemClassLoader());
 	}
 
 	@Override
 	public void start(Stage window) throws Exception {
+
 		window.setResizable(false);
 		gameWindow.setPrefSize(gameData.getDisplayWidth(), gameData.getDisplayHeight());
 
@@ -182,8 +210,19 @@ public class Main extends Application {
 	}
 
 	private Collection<? extends IPostEntityProcessingService> getPostEntityProcessingServices() {
-		return ServiceLoader.load(IPostEntityProcessingService.class).stream().map(ServiceLoader.Provider::get)
-				.collect(toList());
+		List<IPostEntityProcessingService> services = new ArrayList<>();
+
+		// Load services from the system class loader
+		ServiceLoader.load(IPostEntityProcessingService.class).stream().map(ServiceLoader.Provider::get)
+				.forEach(services::add);
+
+		// Load services from each module layer
+		for (ModuleLayer layer : layers) {
+			ServiceLoader.load(layer, IPostEntityProcessingService.class).stream().map(ServiceLoader.Provider::get)
+					.forEach(services::add);
+		}
+
+		return services;
 	}
 
 	private Collection<? extends IUIRenderingService> getUIRenderingServices() {
