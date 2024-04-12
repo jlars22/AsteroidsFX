@@ -1,7 +1,6 @@
 package dk.sdu.mmmi.cbse.common.data;
 
 import java.io.Serializable;
-import java.time.LocalTime;
 import java.util.UUID;
 
 public class Entity implements Serializable {

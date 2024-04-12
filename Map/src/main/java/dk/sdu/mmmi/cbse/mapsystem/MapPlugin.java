@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.ServiceLoader;
 
 public class MapPlugin implements IGamePluginService, IObserver {
-	private int level = 1;
 	private int asteroidsCount = 3;
 
 	@Override
@@ -31,7 +30,6 @@ public class MapPlugin implements IGamePluginService, IObserver {
 
 	@Override
 	public void onEvent(Event event) {
-		level++;
 		asteroidsCount += 3;
 		resetPlayer(event.getGameData(), event.getWorld());
 		resetEnemy(event.getGameData(), event.getWorld());

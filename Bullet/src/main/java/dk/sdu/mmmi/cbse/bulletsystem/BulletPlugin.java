@@ -9,7 +9,7 @@ import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 
 public class BulletPlugin implements IGamePluginService, BulletSPI {
 
-    @Override
+	@Override
 	public void start(GameData gameData, World world) {
 	}
 
@@ -27,8 +27,8 @@ public class BulletPlugin implements IGamePluginService, BulletSPI {
 		Bullet bullet = new Bullet();
 		bullet.setRotation(rotation);
 
-        double OFFSET_DISTANCE = 40;
-        double offsetX = Math.cos(Math.toRadians(bullet.getRotation())) * OFFSET_DISTANCE;
+		double OFFSET_DISTANCE = 40;
+		double offsetX = Math.cos(Math.toRadians(bullet.getRotation())) * OFFSET_DISTANCE;
 		double offsetY = Math.sin(Math.toRadians(bullet.getRotation())) * OFFSET_DISTANCE;
 
 		bullet.setX(shooter.getX() + offsetX);
