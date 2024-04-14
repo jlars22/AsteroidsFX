@@ -10,8 +10,11 @@ module Core {
 	requires javafx.graphics;
 	requires CommonUIRenderingService;
 	requires CommonEntityStylingService;
+	requires spring.context;
+	requires java.annotation;
+	exports dk.sdu.mmmi.cbse.main;
 
-	opens dk.sdu.mmmi.cbse.main to javafx.graphics;
+	opens dk.sdu.mmmi.cbse.main to javafx.graphics, spring.core;
 
 	uses IGamePluginService;
 	uses IEntityProcessingService;
