@@ -32,6 +32,7 @@
         <module>ScoreService</module>
         <module>UIRenderingService</module>
         <module>Weapon</module>
+        <module>ScoreServiceCaller</module>
     </modules>
     <properties>
         <java>java</java>
