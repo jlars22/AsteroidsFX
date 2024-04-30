@@ -1,0 +1,27 @@
+@startuml
+title Add Observers to EventBroker - Sequence Diagram
+
+participant Main
+participant ServiceLoader
+participant IObserver
+participant EventBroker
+
+activate Main
+Main -> ServiceLoader: load(IObserver.class)
+activate ServiceLoader
+note right of ServiceLoader: ServiceLoader returns an iterable list of classes that implement IObserver
+ServiceLoader --> Main: ServiceLoader<IObserver>
+deactivate ServiceLoader
+loop for each IObserver
+    Main -> IObserver: getTopics()
+    activate IObserver
+    IObserver --> Main: List<EventType>
+    deactivate IObserver
+    Main -> EventBroker: addObserver(topics, observer)
+    activate EventBroker
+    EventBroker --> Main: void
+    deactivate EventBroker
+end
+deactivate Main
+note right of Main: Main has added all IObserver instances to EventBroker which will be notified when an event is published\nwith the EventType that they have subscribed to
+@enduml
