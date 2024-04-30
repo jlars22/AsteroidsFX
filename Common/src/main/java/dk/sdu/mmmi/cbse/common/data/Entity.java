@@ -30,10 +30,6 @@ public class Entity implements Serializable {
 		return ID.toString();
 	}
 
-	public void setPolygonCoordinates(double... coordinates) {
-		this.polygonCoordinates = coordinates;
-	}
-
 	public double[] getPolygonCoordinates() {
 		return polygonCoordinates;
 	}
