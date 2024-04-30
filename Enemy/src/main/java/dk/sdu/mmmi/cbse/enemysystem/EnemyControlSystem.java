@@ -158,23 +158,23 @@ public class EnemyControlSystem implements IEntityProcessingService, IObserver, 
 		return enemyShip;
 	}
 
-	private void setRandomPosition(GameData gameData, Enemy eneemy) {
+	private void setRandomPosition(GameData gameData, Enemy enemy) {
 		switch (random.nextInt(4)) {
 			case 0 :
-				eneemy.setX(0);
-				eneemy.setY(random.nextInt(gameData.getDisplayHeight()));
+				enemy.setX(0);
+				enemy.setY(random.nextInt(gameData.getDisplayHeight()));
 				break;
 			case 1 :
-				eneemy.setX(gameData.getDisplayWidth());
-				eneemy.setY(random.nextInt(gameData.getDisplayHeight()));
+				enemy.setX(gameData.getDisplayWidth());
+				enemy.setY(random.nextInt(gameData.getDisplayHeight()));
 				break;
 			case 2 :
-				eneemy.setX(random.nextInt(gameData.getDisplayWidth()));
-				eneemy.setY(0);
+				enemy.setX(random.nextInt(gameData.getDisplayWidth()));
+				enemy.setY(0);
 				break;
 			case 3 :
-				eneemy.setX(random.nextInt(gameData.getDisplayWidth()));
-				eneemy.setY(gameData.getDisplayHeight());
+				enemy.setX(random.nextInt(gameData.getDisplayWidth()));
+				enemy.setY(gameData.getDisplayHeight());
 				break;
 		}
 	}
