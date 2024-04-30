@@ -19,8 +19,8 @@ public class EventBroker {
 		return instance;
 	}
 
-	public void addObserver(List<EventType> topic, IObserver observer) {
-		topic.forEach(t -> observers.computeIfAbsent(t, o -> new ArrayList<>()).add(observer));
+	public void addObserver(List<EventType> topics, IObserver observer) {
+		topics.forEach(t -> observers.computeIfAbsent(t, o -> new ArrayList<>()).add(observer));
 	}
 
 	public void publish(Event event) {
