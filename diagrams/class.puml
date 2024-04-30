@@ -7,6 +7,8 @@ legend top
 <font color=red >Note</font>
 Cross component relationships are not shown in this diagram. This is to help readability.
 To see cross component relationships please refer to the component diagram.
+
+Interfaces from the Common component are duplicated in the components that implement them. This is to help readability.
 end legend
 
 hide empty members
