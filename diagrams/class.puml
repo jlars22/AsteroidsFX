@@ -1,7 +1,17 @@
 @startuml
-title AsteroidsFX - Class Diagram
+title
+<u>AsteroidsFX - Component Diagram</u>
+end title
+
+legend top
+<font color=red >Note</font>
+Cross component relationships are not shown in this diagram. This is to help readability.
+To see cross component relationships please refer to the component diagram.
+end legend
+
 hide empty members
-component Common  {
+
+component Common {
 }
 
 package Common.data  {
@@ -440,25 +450,4 @@ component Weapon {
     }
 }
 
-
-
-'Relationships'
-Core -r-> Common
-CommonAsteroid -u-> Common
-CommonBullet -u-> Common
-CommonEnemy -u-> Common
-CommonPlayer -u-> Common
-CommonScoreService -u-> Common
-CommonWeapon -u-> Common
-Collision -u-> Common
-Debris -u-> Common
-Enemy -u-> CommonWeapon
-EntityStylingService -u> Common
-Map -u> CommonAsteroid
-Map -u> CommonPlayer
-Map -u> CommonEnemy
-Player -u-> CommonWeapon
-ScoreService -u-> Common
-UIRenderingService -u-> CommonScoreService
-Weapon -u-> CommonBullet
 @enduml
