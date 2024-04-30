@@ -1,51 +1,44 @@
 @startuml
-left to right direction
-title
-<u>AsteroidsFX - Class Diagram</u>
-end title
-
-legend top
-<font color=red>Note</font>
-Some interfaces are duplicated in different packages in a "common" package, this is for visual clarity to avoid too many arrows.
-In the actual code, these interfaces are defined once <i>(highlighted with green background color)</i> and implemented by different classes.
-
-Some methods and attributes are also hidden for visual clarity.
-This is because they are getters/setters or if they can be seen by the interface they implement or the class they extend.
-end legend
-
-
-
-
-
+title AsteroidsFX - Class Diagram
+skinparam linetype ortho
 hide empty members
-skinparam class {
-    BackgroundColor LightYellow
-    FontSize 12
-    FontStyle Bold
-    HeaderShadowing false
-    Padding 5
-    BorderThickness 1
-    RoundCorner 10
-}
 
-
-'Common'
-package Common  {
+component Common  {
 }
 
 package Common.data  {
     class Entity {
-        UUID id
-        double[] polygonCoordinates
-        double width
-        double height
-        double x
-        double y
-        double dx
-        double dy
-        double rotation
-        int health
-        Type type
+        - UUID id
+        - double[] polygonCoordinates
+        - double width
+        - double height
+        - double x
+        - double y
+        - double dx
+        - double dy
+        - double rotation
+        - int health
+        - Type type
+
+    + getID() : String
+    + getPolygonCoordinates() : double[]
+    + setX(double x) : void
+    + getX() : double
+    + setY(double y) : void
+    + getY() : double
+    + setRotation(double rotation) : void
+    + getRotation() : double
+    + getDX() : double
+    + setDX(double dx) : void
+    + getDY() : double
+    + setDY(double dy) : void
+    + getWidth() : double
+    + setWidth(double width) : void
+    + getHeight() : double
+    + setHeight(double height) : void
+    + getHealth() : int
+    + setHealth(int health) : void
+    + getType() : Type
     }
 
     enum Type {
@@ -57,226 +50,111 @@ package Common.data  {
     }
 
     class Event {
-        Entity entityA
-        Entity entityB
-        EventType eventType
-        World world
-        GameData gameData
+        - Entity entityA
+        - Entity entityB
+        - EventType eventType
+        - World world
+        - GameData gameData
+
+        + getEntityA() : Entity
+        + getEntityB() : Entity
+        + getEventType() : EventType
+        + getWorld() : World
+        + getGameData() : GameData
     }
 
     enum EventType {
-    COLLISION
-    SCORE_INCREMENT
-    NEW_LEVEL
-    GAME_OVER
+        COLLISION
+        SCORE_INCREMENT
+        NEW_LEVEL
+        GAME_OVER
     }
 
     class EventBroker {
-        EventBroker instance
-        Map<EventType, List<IObserver>> observers
+        - {static} EventBroker instance
+        - Map<EventType, List<IObserver>> observers
 
-        {static} getInstance() : EventBroker
-        addObserver(List<EventType>, IObserver) : void
-        publish(Event) : void
+        + {static} getInstance() : EventBroker
+        + addObserver(List<EventType> topics, IObserver observer) : void
+        + publish(Event event) : void
     }
 
     class GameData {
-        int displayWidth
-        int displayHeight
-        GameKeys keys
-        Entity player
+        - int displayWidth
+        - int displayHeight
+        - GameKeys keys
+        - Entity player
+
+        + getKeys() : GameKeys
+        + setDisplayWidth(int width) : void
+        + getDisplayWidth() : int
+        + setDisplayHeight(int height) : void
+        + getDisplayHeight() : int
+        + setPlayer(Entity player) : void
+        + getPlayer() : Entity
     }
 
+
+
     class GameKeys {
-        {static} boolean[] keys
-        {static} boolean[] pkeys
-        {static} int NUM_KEYS
-        {static} int UP
-        {static} int LEFT
-        {static} int RIGHT
-        {static} int SPACE
-        update() : void
-        setKey(int, boolean) : void
-        isDown(int) : boolean
-        isPressed(int) : boolean
+        - {static} boolean[] keys
+        - {static} boolean[] pkeys
+        - {static} int NUM_KEYS
+        + {static} int UP
+        + {static} int LEFT
+        + {static} int RIGHT
+        + {static} int SPACE
+
+        + update() : void
+        + setKey(int, boolean) : void
+        + isDown(int) : boolean
+        + isPressed(int) : boolean
     }
 
     class World {
-        Map<String, Entity> entityMap
-        addEntity(Entity) : String
-        removeEntity(String entityID) : void
-        void removeEntity(Entity entity) : void
-        getEntities() : Collection<Entity>
-        getEntities(Class<E>... entityTypes) : <E extends Entity> List<Entity>
-        getEntity(String ID) : Entity
+        - Map<String, Entity> entityMap
+
+        + addEntity(Entity) : String
+        + removeEntity(String entityID) : void
+        + removeEntity(Entity entity) : void
+        + getEntities() : Collection<Entity>
+        + getEntities(Class<E>... entityTypes) : <E extends Entity> List<Entity>
+        + getEntity(String ID) : Entity
     }
+
+    Entity *-- Type: "has a "
+    Event *-- EventType: "has a "
+    GameData *-- GameKeys: "contains "
 }
 
-package Common.services  {
-    interface IEntityProcessingService #lightgreen {
-        process(GameData, World) : void
+package Common.services {
+    interface IEntityProcessingService {
+        process(GameData gameData, World world) : void
     }
-    interface IPostEntityProcessingService #lightgreen {
-        process(GameData, World) : void
+
+    interface IGamePluginService {
+        start(GameData gameData, World world) : void
+        stop(GameData gameData, World world) : void
     }
-    interface IGamePluginService #lightgreen {
-        stop(GameData, World) : void
-        start(GameData, World) : void
-    }
-    interface IObserver #lightgreen {
-        onEvent(Event) : void
+
+    interface IObserver {
+        onEvent(Event event) : void
         getTopics() : List<EventType>
     }
-}
 
-Event "1" -- "1" EventType
-Entity "1" -- "1" Type
-
-'--------------------------------------------------'
-
-'EntityStylingService'
-package CommonEntityStylingService  {
-    interface IEntityStylingService {
-        styleEntity(Entity, Polygon) : void
+    interface IPostEntityProcessingService {
+        process(GameData gameData, World world) : void
     }
-}
 
-package EntityStylingService  {
-    class EntityStylingServiceImpl implements CommonEntityStylingService.IEntityStylingService
-}
-
-'--------------------------------------------------'
-
-'UIRenderingService'
-package CommonUIRenderingService  {
     interface IUIRenderingService {
-        generate(Pane) : void
-        update(Pane, GameData) : void
+        render(Pane gameWindow) : void
+        update(Pane gameWindow, GameData gameData) : void
     }
+
+     interface IEntityStylingService {
+            styleEntity(Entity entity, Polygon polygon) : void
+        }
+
 }
-
-package UIRenderingService  {
-    class PlayerHealthRenderingService implements CommonUIRenderingService.IUIRenderingService
-    class ScoreRenderingService implements CommonUIRenderingService.IUIRenderingService
-}
-
-
-'--------------------------------------------------'
-
-'ScoreService'
-package CommonScoreService  {
-    interface IScoreService {
-        addScore(Entity) : void
-        getScore() : int
-        getLevel() : int
-    }
-}
-
-package ScoreService  {
-    class ScoreServiceImpl implements CommonScoreService.IScoreService, common.IObserver
-}
-
-'--------------------------------------------------'
-
-'Player'
-package CommonPlayer  {
-    class Player extends common.Entity
-    interface PlayerSPI {
-        resetPlayerPosition(GameData, World) : void
-    }
-}
-
-package Player  {
-    class PlayerControlSystem implements CommonPlayer.PlayerSPI, common.IEntityProcessingService, common.IObserver
-    class PlayerPlugin implements common.IGamePluginService
-}
-
-'--------------------------------------------------'
-
-'Enemy'
-package CommonEnemy  {
-    class Enemy extends common.Entity
-    interface EnemySPI {
-        resetEnemyPosition(GameData, World) : void
-    }
-}
-
-package Enemy  {
-    class EnemyControlSystem implements CommonEnemy.EnemySPI, common.IEntityProcessingService, common.IObserver
-    class EnemyPlugin implements common.IGamePluginService
-}
-
-'--------------------------------------------------'
-
-'Weapon'
-package CommonWeapon  {
-    interface WeaponSPI {
-        shoot(Entity, World) : void
-    }
-}
-
-package Weapon  {
-    class WeaponPlugin implements common.IGamePluginService, CommonWeapon.WeaponSPI
-}
-
-'--------------------------------------------------'
-
-'Bullet'
-package CommonBullet  {
-    class Bullet extends common.Entity
-    interface BulletSPI {
-        createBullet(Entity, double) : Entity
-    }
-}
-
-package Bullet  {
-    class BulletControlSystem implements common.IEntityProcessingService, common.IObserver
-    class BulletPlugin implements common.IGamePluginService, CommonBullet.BulletSPI
-}
-
-'--------------------------------------------------'
-
-'Asteroid'
-package CommonAsteroid  {
-    class Asteroid extends common.Entity
-    interface AsteroidSPI {
-        createAsteroid(int, World, GameData) : void
-    }
-}
-
-package Asteroid  {
-  class AsteroidControlSystem implements common.IEntityProcessingService, common.IObserver
-  class AsteroidPlugin implements common.IGamePluginService, CommonAsteroid.AsteroidSPI
-}
-
-'--------------------------------------------------'
-
-'Debris'
-package Debris  {
-    class Debris extends common.Entity
-    class DebrisControlSystem implements common.IEntityProcessingService, common.IObserver
-}
-
-'--------------------------------------------------'
-
-'Map'
-package Map  {
-    class MapPlugin implements common.IGamePluginService, common.IObserver
-}
-
-'--------------------------------------------------'
-
-'Collision'
-package Collision  {
-    class CollisionControlSystem implements IPostEntityProcessingService
-}
-
-'--------------------------------------------------'
-
-'Core'
-package Core  {
-    class Main
-}
-'--------------------------------------------------'
 
 @enduml
