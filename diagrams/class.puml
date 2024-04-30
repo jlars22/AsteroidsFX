@@ -1,8 +1,6 @@
 @startuml
 title AsteroidsFX - Class Diagram
-skinparam linetype ortho
 hide empty members
-
 component Common  {
 }
 
@@ -22,22 +20,22 @@ package Common.data  {
 
     + getID() : String
     + getPolygonCoordinates() : double[]
-    + setX(double x) : void
+    + setX(double) : void
     + getX() : double
-    + setY(double y) : void
+    + setY(double) : void
     + getY() : double
-    + setRotation(double rotation) : void
+    + setRotation(double) : void
     + getRotation() : double
     + getDX() : double
-    + setDX(double dx) : void
+    + setDX(double) : void
     + getDY() : double
-    + setDY(double dy) : void
+    + setDY(double) : void
     + getWidth() : double
-    + setWidth(double width) : void
+    + setWidth(double) : void
     + getHeight() : double
-    + setHeight(double height) : void
+    + setHeight(double) : void
     + getHealth() : int
-    + setHealth(int health) : void
+    + setHealth(int) : void
     + getType() : Type
     }
 
@@ -75,8 +73,8 @@ package Common.data  {
         - Map<EventType, List<IObserver>> observers
 
         + {static} getInstance() : EventBroker
-        + addObserver(List<EventType> topics, IObserver observer) : void
-        + publish(Event event) : void
+        + addObserver(List<EventType>, IObserver) : void
+        + publish(Event) : void
     }
 
     class GameData {
@@ -86,11 +84,11 @@ package Common.data  {
         - Entity player
 
         + getKeys() : GameKeys
-        + setDisplayWidth(int width) : void
+        + setDisplayWidth(int) : void
         + getDisplayWidth() : int
-        + setDisplayHeight(int height) : void
+        + setDisplayHeight(int) : void
         + getDisplayHeight() : int
-        + setPlayer(Entity player) : void
+        + setPlayer(Entity) : void
         + getPlayer() : Entity
     }
 
@@ -115,11 +113,11 @@ package Common.data  {
         - Map<String, Entity> entityMap
 
         + addEntity(Entity) : String
-        + removeEntity(String entityID) : void
-        + removeEntity(Entity entity) : void
+        + removeEntity(String) : void
+        + removeEntity(Entity) : void
         + getEntities() : Collection<Entity>
-        + getEntities(Class<E>... entityTypes) : <E extends Entity> List<Entity>
-        + getEntity(String ID) : Entity
+        + getEntities(Class<E>...) : <E extends Entity> List<Entity>
+        + getEntity(String) : Entity
     }
 
     Entity *-- Type: "has a "
@@ -129,32 +127,338 @@ package Common.data  {
 
 package Common.services {
     interface IEntityProcessingService {
-        process(GameData gameData, World world) : void
+        process(GameData, World) : void
     }
 
     interface IGamePluginService {
-        start(GameData gameData, World world) : void
-        stop(GameData gameData, World world) : void
+        start(GameData, World) : void
+        stop(GameData, World) : void
     }
 
     interface IObserver {
-        onEvent(Event event) : void
+        onEvent(Event) : void
         getTopics() : List<EventType>
     }
 
     interface IPostEntityProcessingService {
-        process(GameData gameData, World world) : void
+        process(GameData, World) : void
     }
 
     interface IUIRenderingService {
-        render(Pane gameWindow) : void
-        update(Pane gameWindow, GameData gameData) : void
+        render(Pane) : void
+        update(Pane, GameData) : void
     }
 
      interface IEntityStylingService {
-            styleEntity(Entity entity, Polygon polygon) : void
+            styleEntity(Entity, Polygon) : void
         }
+}
+
+component Core {
+        class Main extends Application{
+            - GameData gameData
+            - World world
+            - Map<Entity, Polygon> polygons
+            - Pane gameWindow
+            - EventBroker eventBroker
+
+            + {static} main(String[]) : void
+            + start(Stage) : void
+            - getScene(): Scene
+            - render(): void
+            - update(): void
+            - draw(): void
+            - loadObservers(): void
+            - getPluginServices(): Collection<? extends IGamePluginService>
+            - getEntityProcessingServices(): Collection<? extends IEntityProcessingService>
+            - getPostEntityProcessingServices(): Collection<? extends IPostEntityProcessingService>
+            - getUIRenderingServices(): Collection<? extends IUIRenderingService>
+            - getEntityStylingServices(): Collection<? extends IEntityStylingService>
+        }
+
 
 }
 
+component CommonAsteroid {
+    class Asteroid extends Entity {
+        - int size
+        + getSize() : int
+    }
+    interface AsteroidSPI {
+        createAsteroid(int, World, GameData) : void
+    }
+}
+
+component CommonBullet {
+    class Bullet extends Entity {
+        - double distanceTravelled
+        - Entity owner
+
+        + getDistanceTravelled() : double
+        + setDistanceTravelled(double) : void
+        + getMaxTravelDistance() : double
+        + getOwner() : Entity
+        + setOwner(Entity owner) : void
+    }
+
+    interface BulletSPI {
+        createBullet(Entity, double) : Entity
+    }
+}
+
+component CommonEnemy {
+    class Enemy extends Entity {
+        - LocalTime lastTimeFired
+        - LocalTime lastTimeChangedDirection
+
+        + getLastTimeFired() : LocalTime
+        + setLastTimeFired(LocalTime) : void
+        + getLastTimeChangedDirection() : LocalTime
+        + setLastTimeChangedDirection(LocalTime) : void
+    }
+
+    interface EnemySPI {
+        resetEnemyPosition(GameData, World) : void
+    }
+}
+
+component CommonPlayer {
+    class Player extends Entity {
+        - LocalTime respawnTime
+
+        + getRespawnTime() : LocalTime
+        + setRespawnTime(LocalTime) : void
+    }
+
+    interface PlayerSPI {
+        resetPlayerPosition(GameData, World) : void
+    }
+}
+
+component CommonScoreService {
+    interface IScoreService {
+        addScore(Entity) : void
+        getScore() : int
+        getLevel() : int
+    }
+}
+
+component CommonWeapon {
+    interface WeaponSPI {
+        shoot(Entity, World) : void
+    }
+}
+
+component Asteroid {
+    class AsteroidControlSystem implements IEntityProcessingService, IObserver {
+        - Random random
+        - EventBroker eventBroker
+
+        + process(GameData, World,): void
+        + onEvent(Event): void
+        + getTopics(): List<EventType>
+        - handleTravel(Asteroid): void
+        - handleBorders(GameData, Asteroid): void
+        - splitAsteroid(Entity, World): void
+    }
+
+    class AsteroidPlugin implements IGamePluginService, CommonAsteroid.AsteroidSPI {
+        - Random random
+
+        + start(GameData, World): void
+        + stop(GameData,World): void
+        + createAsteroid(int, World, GameData): void
+    }
+}
+
+component Bullet {
+    class BulletControlSystem implements IEntityProcessingService, IObserver {
+        - int BULLET_SPEED
+        - EventBroker eventBroker
+
+        + process(GameData, World): void
+        + onEvent(Event): void
+        + getTopics(): List<EventType>
+        - handleTravel( World, Bullet): void
+        - handleBorders(GameData, Bullet): void
+        - handleBulletCollision(Entity, Entity, Event): void
+    }
+
+    class BulletPlugin implements IGamePluginService, CommonBullet.BulletSPI {
+        + start(GameData, World): void
+        + stop(GameData, World): void
+        + createBullet(Entity, double): Entity
+    }
+}
+
+component Collision {
+    class CollisionControlSystem implements IPostEntityProcessingService {
+        - EventBroker eventBroker
+
+        + process(GameData, World): void
+        - checkCollision(Entity, Entity) : boolean
+        - isAnyEntityDebris(Entity, Entity) : boolean
+        - isEntitiesSameInstance(Entity, Entity) : boolean
+    }
+}
+
+component Debris {
+    class Debris extends Entity {
+        - LocalTime shouldBeRemovedTime
+
+        + getShouldBeRemovedTime() : LocalTime
+    }
+
+    class DebrisControlSystem implements IEntityProcessingService, IObserver {
+        - Random random
+
+        + process(GameData, World): void
+        + onEvent(Event): void
+        + getTopics(): List<EventType>
+        - makeDebris(Entity, World): void
+    }
+}
+
+component Enemy {
+    class EnemyControlSystem implements IEntityProcessingService, IObserver, CommonEnemy.EnemySPI {
+        - Random random
+        - EventBroker eventBroker
+
+        + process(GameData, World): void
+        + onEvent(Event): void
+        + getTopics(): List<EventType>
+        + resetEnemyPosition(GameData, World): void
+        - handleRespawn(GameData, World) : void
+        - handleBorders(GameData, Enemy): void
+        - startMovement(Enemy) : void
+        - getNewDirection(Enemy) : double
+        - shouldChangeDirection(Enemy) : boolean
+        - startFiring(World, Enemy) : void
+        - createEnemyShip(GameData) : Enemy
+        - setRandomPosition(GameData, Enemy) : void
+        - getWeaponSPIs() : Collection<? extends WeaponSPI>
+    }
+
+    class EnemyPlugin implements IGamePluginService {
+        - Entity enemy
+
+        + start(GameData, World): void
+        + stop(GameData, World): void
+
+    }
+}
+
+component EntityStylingService {
+    class EntityStylingServiceImpl implements IEntityStylingService {
+        + styleEntity(Entity, Polygon): void
+        - setPolygonStylingByInstance(Entity, Polygon): void
+        - setEntityWidthAndHeightByPolygon(Entity, Polygon): void
+    }
+}
+
+component Map {
+    class MapPlugin implements IGamePluginService, IObserver {
+        - int asteroidsCount
+
+        + start(GameData, World): void
+        + stop(GameData, World): void
+        + onEvent(Event): void
+        + getTopics(): List<EventType>
+        - createAsteroids(World, GameData): void
+        - resetPlayer(GameData, World): void
+        - resetEnemy(GameData, World): void
+        - getAsteroidSPIs(): Collection<? extends AsteroidSPI>
+        - getPlayerSPIs(): Collection<? extends PlayerSPI>
+        - getEnemySPIs(): Collection<? extends EnemySPI>
+    }
+}
+
+component Player {
+    class PlayerControlSystem implements IEntityProcessingService, IObserver, CommonPlayer.PlayerSPI {
+        + process(GameData, World): void
+        + onEvent(Event): void
+        + getTopics(): List<EventType>
+        + resetPlayerPosition(GameData, World): void
+        - respawnPlayer(GameData, World): void
+        - handleInput(GameData, World, Entity): void
+        - applyAcceleration(Entity, double) : void
+        - updatePosition(Entity) : void
+        - handleBorders(GameData, Entity) : void
+        - fireBullet(World, Entity) : void
+        - getWeaponSPIs() : Collection<? extends WeaponSPI>
+    }
+
+    class PlayerPlugin implements IGamePluginService {
+
+        + start(GameData, World): void
+        + stop(GameData, World): void
+        - createPlayerShip(GameData): Entity
+    }
+}
+
+component ScoreService {
+    class ScoreServiceImpl implements CommonScoreService.IScoreService, IObserver {
+        - Set<String> scoredEntities
+        - AtomicInteger score
+        - AtomicInteger level
+
+        + addScore(Entity): void
+        + getScore(): int
+        + getLevel(): int
+        + onEvent(Event): void
+        + getTopics(): List<EventType>
+        - incrementScore(Event): void
+    }
+}
+
+component UIRenderingService {
+    class PlayerHealthRenderingService implements IUIRenderingService {
+        + generate(Pane): void
+        + update(Pane, GameData): void
+        - generatePixelHeart(): ImageView
+    }
+
+    class ScoreRenderingService implements IUIRenderingService {
+        + generate(Pane): void
+        + update(Pane, GameData): void
+        - getLevelText(): Text
+        - getScoreText(): Text
+        - updateLevelAndScoreText(Text, Text): void
+        - removeLevelAndScoreText(Pane): void
+        - isGameOver(GameData): boolean
+        - displayGameOverText(Pane): void
+        - getScoreServices(): Collection<? extends IScoreService>
+    }
+}
+
+component Weapon {
+    class WeaponPlugin implements IGamePluginService, CommonWeapon.WeaponSPI {
+        + start(GameData, World): void
+        + stop(GameData, World): void
+        + shoot(Entity, World) : void
+        - getBulletSPIs() : Collection<? extends BulletSPI>
+    }
+}
+
+
+
+'Relationships'
+Core -r-> Common
+CommonAsteroid -u-> Common
+CommonBullet -u-> Common
+CommonEnemy -u-> Common
+CommonPlayer -u-> Common
+CommonScoreService -u-> Common
+CommonWeapon -u-> Common
+Collision -u-> Common
+Debris -u-> Common
+Enemy -u-> CommonWeapon
+EntityStylingService -u> Common
+Map -u> CommonAsteroid
+Map -u> CommonPlayer
+Map -u> CommonEnemy
+Player -u-> CommonWeapon
+ScoreService -u-> Common
+UIRenderingService -u-> CommonScoreService
+Weapon -u-> CommonBullet
 @enduml

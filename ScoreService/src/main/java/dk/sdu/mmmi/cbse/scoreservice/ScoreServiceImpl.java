@@ -30,17 +30,9 @@ public class ScoreServiceImpl implements IScoreService, IObserver {
 		return score.get();
 	}
 
-	public void resetScore() {
-		score.set(0);
-	}
-
 	@Override
 	public int getLevel() {
 		return level.get();
-	}
-
-	public void resetLevel() {
-		level.set(1);
 	}
 
 	@Override

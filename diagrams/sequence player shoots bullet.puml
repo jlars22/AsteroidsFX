@@ -1,0 +1,36 @@
+@startuml
+title Player Presses Space To Shoot - Sequence Diagram
+
+participant Main
+participant IEntityProcessingService
+participant PlayerControlSystem
+participant WeaponSPI
+participant BulletSPI
+participant World
+
+activate Main
+Main -> IEntityProcessingService: process(GameData, World)
+activate IEntityProcessingService
+IEntityProcessingService -> PlayerControlSystem: process(GameData, World)
+activate PlayerControlSystem
+PlayerControlSystem -> PlayerControlSystem: handleInput(GameData, World, Entity)
+note right of PlayerControlSystem: Player has pressed space so \ngameData.getKeys().isPressed(GameKeys.SPACE) is true
+PlayerControlSystem -> WeaponSPI: shoot(Entity, World)
+activate WeaponSPI
+WeaponSPI -> BulletSPI: createBullet(Entity, double)
+activate BulletSPI
+BulletSPI --> WeaponSPI: Entity
+deactivate BulletSPI
+WeaponSPI -> World: addEntity(Entity)
+activate World
+World --> WeaponSPI: String
+deactivate World
+WeaponSPI --> PlayerControlSystem: void
+deactivate WeaponSPI
+PlayerControlSystem --> IEntityProcessingService: void
+deactivate PlayerControlSystem
+IEntityProcessingService --> Main: void
+deactivate IEntityProcessingService
+
+
+@enduml
