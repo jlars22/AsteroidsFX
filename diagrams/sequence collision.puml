@@ -12,7 +12,7 @@ activate IPostEntityProcessingService
 IPostEntityProcessingService -> CollisionControlSystem: process(GameData, World)
 activate CollisionControlSystem
 CollisionControlSystem -> CollisionControlSystem: checkCollision(Entity, Entity)
-    note right of CollisionControlSystem: if the result is true, publish the collision event\nelse do nothing
+    note right of CollisionControlSystem: if the result of checkCollision is true,\npublish the collision event, else do nothing
 alt checkCollision(Entity, Entity) is true
     CollisionControlSystem -> EventBroker: publish(EntityA, EntityB, EventType.COLLISION, World, GameData)
     activate EventBroker
