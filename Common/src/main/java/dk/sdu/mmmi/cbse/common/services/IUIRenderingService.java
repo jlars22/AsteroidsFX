@@ -1,4 +1,4 @@
-package dk.sdu.mmmi.cbse.common.uirenderingservice;
+package dk.sdu.mmmi.cbse.common.services;
 
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import javafx.scene.layout.Pane;

@@ -1,15 +1,13 @@
-import dk.sdu.mmmi.cbse.common.entitystylingservice.IEntityStylingService;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
+import dk.sdu.mmmi.cbse.common.services.IEntityStylingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
-import dk.sdu.mmmi.cbse.common.uirenderingservice.IUIRenderingService;
+import dk.sdu.mmmi.cbse.common.services.IUIRenderingService;
 
 module Core {
 	requires Common;
 	requires javafx.graphics;
-	requires CommonUIRenderingService;
-	requires CommonEntityStylingService;
 
 	opens dk.sdu.mmmi.cbse.main to javafx.graphics;
 
