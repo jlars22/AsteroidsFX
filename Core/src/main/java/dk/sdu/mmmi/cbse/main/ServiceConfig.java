@@ -8,11 +8,10 @@ import dk.sdu.mmmi.cbse.common.services.IEntityStylingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
+import dk.sdu.mmmi.cbse.common.services.IUIRenderingService;
 import java.util.List;
 import java.util.ServiceLoader;
 import javax.annotation.PostConstruct;
-
-import dk.sdu.mmmi.cbse.common.services.IUIRenderingService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
