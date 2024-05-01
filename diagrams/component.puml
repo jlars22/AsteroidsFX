@@ -28,7 +28,7 @@ together {
     component [ScoreService]
     component [Player]
     component [UIRenderingService]
-
+    component [EntityStylingService]
 }
 
 together {
@@ -38,12 +38,9 @@ together {
     component [CommonBullet] #Lightblue
     component [CommonEnemy] #Lightblue
     component [CommonScoreService] #Lightblue
-    component [CommonEntityStylingService] #Lightblue
-    component [CommonUIRenderingService] #Lightblue
     component [CommonPlayer] #Lightblue
 }
 
-component [EntityStylingService]
 component [Core] #Lightgreen
 
 'Asteroid'
@@ -64,8 +61,6 @@ component [Core] #Lightgreen
 'CommonEnemy'
 [CommonEnemy] --(0-- [Common]
 
-'CommonEntityStylingService'
-[CommonEntityStylingService] --(0-- [Common]
 
 'CommonPlayer'
 [CommonPlayer] --(0-- [Common]
@@ -73,16 +68,11 @@ component [Core] #Lightgreen
 'CommonScoreService'
 [CommonScoreService] --(0-- [Common]
 
-'CommonUIRenderingService'
-[CommonUIRenderingService] --(0-- [Common]
-
 'CommonWeapon'
 [CommonWeapon] --(0-- [Common]
 
 'Core'
 [Core] --(0-- [Common]
-[Core] -(0- [CommonUIRenderingService]
-[Core] -(0- [CommonEntityStylingService]
 
 'Debris'
 [Debris] -(0-- [Common]
@@ -91,8 +81,6 @@ component [Core] #Lightgreen
 [Enemy] -(0- [CommonEnemy]
 [Enemy] -(0- [CommonWeapon]
 
-'EntityStylingService'
-[EntityStylingService] -(0- [CommonEntityStylingService]
 
 'Map'
 [Map] -(0- [CommonAsteroid]
@@ -108,8 +96,10 @@ component [Core] #Lightgreen
 [ScoreService] -(0- [CommonScoreService]
 
 'UIRenderingService'
-[UIRenderingService] -(0- [CommonUIRenderingService]
 [UIRenderingService] -(0- [CommonScoreService]
+
+'EntityStylingService'
+[EntityStylingService] -(0- [Common]
 
 'Weapon'
 [Weapon] -(0- [CommonWeapon]

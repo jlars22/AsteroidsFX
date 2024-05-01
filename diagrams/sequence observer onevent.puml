@@ -1,0 +1,44 @@
+@startuml
+title Bullet Collision Triggers Score Event - Sequence Diagram
+
+participant EventBroker
+participant BulletControlSystem
+participant World
+participant EventBroker as EventBroker2
+
+activate EventBroker
+EventBroker -> BulletControlSystem: onEvent(Event)
+activate BulletControlSystem
+BulletControlSystem -> BulletControlSystem: handleBulletCollision(EntityA, EntityB, Event)
+alt EntityA is instance of Bullet
+    BulletControlSystem -> World: removeEntity(entity)
+    activate World
+    World --> BulletControlSystem: void
+    deactivate World
+    alt EntityA owner type is not ENEMY
+        BulletControlSystem -> EventBroker2: publish(EntityA, EntityB, EventType.SCORE_INCREMENT, World, GameData)
+        activate EventBroker2
+        note right of EventBroker2: Score event is published
+        EventBroker2 --> BulletControlSystem: void
+        deactivate EventBroker2
+    end
+end
+BulletControlSystem -> BulletControlSystem: handleBulletCollision(EntityB, EntityA, Event)
+alt EntityB is instance of Bullet
+    BulletControlSystem -> World: removeEntity(entity)
+    activate World
+    World --> BulletControlSystem: void
+    deactivate World
+    alt EntityB owner type is not ENEMY
+        BulletControlSystem -> EventBroker2: publish(EntityB, EntityA, EventType.SCORE_INCREMENT, World, GameData)
+        activate EventBroker2
+        note right of EventBroker2: Score event is published
+        EventBroker2 --> BulletControlSystem: void
+        deactivate EventBroker2
+    end
+end
+BulletControlSystem --> EventBroker: void
+deactivate BulletControlSystem
+deactivate EventBroker
+
+@enduml

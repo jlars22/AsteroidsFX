@@ -1,7 +1,7 @@
 package dk.sdu.mmmi.cbse.uirenderingservice;
 
 import dk.sdu.mmmi.cbse.common.data.GameData;
-import dk.sdu.mmmi.cbse.common.uirenderingservice.IUIRenderingService;
+import dk.sdu.mmmi.cbse.common.services.IUIRenderingService;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;

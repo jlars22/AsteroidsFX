@@ -16,10 +16,8 @@
         <module>CommonAsteroid</module>
         <module>CommonBullet</module>
         <module>CommonEnemy</module>
-        <module>CommonEntityStylingService</module>
         <module>CommonPlayer</module>
         <module>CommonScoreService</module>
-        <module>CommonUIRenderingService</module>
         <module>CommonWeapon</module>
         <module>Asteroid</module>
         <module>Bullet</module>
