@@ -3,15 +3,16 @@ package dk.sdu.mmmi.cbse.main;
 import static java.util.stream.Collectors.toList;
 
 import dk.sdu.mmmi.cbse.common.data.EventBroker;
-import dk.sdu.mmmi.cbse.common.entitystylingservice.IEntityStylingService;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
+import dk.sdu.mmmi.cbse.common.services.IEntityStylingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IObserver;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
-import dk.sdu.mmmi.cbse.common.uirenderingservice.IUIRenderingService;
 import java.util.List;
 import java.util.ServiceLoader;
 import javax.annotation.PostConstruct;
+
+import dk.sdu.mmmi.cbse.common.services.IUIRenderingService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
