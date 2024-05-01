@@ -31,3 +31,6 @@ target/
 .DS_Store
 .AppleDouble
 .LSOverride
+
+# Don't ignore JAR files in the plugins directory
+!/plugins/*.jar
