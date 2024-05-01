@@ -4,7 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.scoreservice.IScoreService;
-import dk.sdu.mmmi.cbse.common.uirenderingservice.IUIRenderingService;
+import dk.sdu.mmmi.cbse.common.services.IUIRenderingService;
 import java.util.Collection;
 import java.util.ServiceLoader;
 import javafx.scene.layout.Pane;

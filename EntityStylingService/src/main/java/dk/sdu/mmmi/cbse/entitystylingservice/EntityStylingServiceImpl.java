@@ -1,7 +1,7 @@
 package dk.sdu.mmmi.cbse.entitystylingservice;
 
 import dk.sdu.mmmi.cbse.common.data.Entity;
-import dk.sdu.mmmi.cbse.common.entitystylingservice.IEntityStylingService;
+import dk.sdu.mmmi.cbse.common.services.IEntityStylingService;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
