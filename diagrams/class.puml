@@ -1,16 +1,16 @@
 @startuml
 title
-<u>AsteroidsFX - Component Diagram</u>
+<u>AsteroidsFX - Class Diagram</u>
 end title
 
 legend top
 <font color=red >Note</font>
-Cross component relationships are not shown in this diagram. This is to help readability.
-To see cross component relationships please refer to the component diagram.
-
-Interfaces from the Common component are duplicated in the components that implement them. This is to help readability.
+All components rely on the Common component, which is why this relationship is not showed.
+Interfaces and Classes from the Common component are also duplicated in the components that implement/extend them.
+This is to improve clarity and emphasize important relationships.
 end legend
 
+skinparam defaultTextAlignment center
 hide empty members
 
 component Common {
@@ -451,5 +451,23 @@ component Weapon {
         - getBulletSPIs() : Collection<? extends BulletSPI>
     }
 }
+
+Common -[hidden]d- Core
+
+CommonBullet -[hidden]d- Bullet
+CommonWeapon -[hidden]d- Weapon
+CommonEnemy -[hidden]d- Enemy
+CommonPlayer -[hidden]d- Player
+CommonAsteroid -[hidden]d- Asteroid
+CommonScoreService -[hidden]d- ScoreService
+
+Weapon --> CommonBullet.BulletSPI : uses
+Enemy --> CommonWeapon.WeaponSPI : uses
+Player --> CommonWeapon.WeaponSPI : uses
+Map --> CommonEnemy.EnemySPI : uses
+Map --> CommonPlayer.PlayerSPI : uses
+Map --> CommonAsteroid.AsteroidSPI : uses
+UIRenderingService --> CommonScoreService.IScoreService : uses
+
 
 @enduml

@@ -9,7 +9,7 @@ participant EventBroker
 activate Main
 Main -> ServiceLoader: load(IObserver.class)
 activate ServiceLoader
-note right of ServiceLoader: ServiceLoader returns an iterable list of classes that implement IObserver
+note right of ServiceLoader: ServiceLoader returns an iterable Object of classes that implement IObserver
 ServiceLoader --> Main: ServiceLoader<IObserver>
 deactivate ServiceLoader
 loop for each IObserver
