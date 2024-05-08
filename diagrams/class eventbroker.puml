@@ -1,0 +1,134 @@
+@startuml
+@startuml
+title
+<u>AsteroidsFX - EventBroker Class Diagram</u>
+end title
+
+legend top
+<font color=red >Note</font>
+This diagram is to show how components use the EventBroker located in the Common component.
+
+Therefore all non related is hidden.
+end legend
+
+skinparam defaultTextAlignment center
+hide empty members
+
+component Common {
+}
+
+package Common.data  {
+
+
+    class Event {
+        - Entity entityA
+        - Entity entityB
+        - EventType eventType
+        - World world
+        - GameData gameData
+
+        + getEntityA() : Entity
+        + getEntityB() : Entity
+        + getEventType() : EventType
+        + getWorld() : World
+        + getGameData() : GameData
+    }
+
+    enum EventType {
+        COLLISION
+        SCORE_INCREMENT
+        NEW_LEVEL
+        GAME_OVER
+    }
+
+    class EventBroker {
+        - {static} EventBroker instance
+        - Map<EventType, List<IObserver>> observers
+
+        + {static} getInstance() : EventBroker
+        + addObserver(List<EventType>, IObserver) : void
+        + publish(Event) : void
+    }
+
+
+}
+
+package Common.services {
+    interface IObserver {
+        onEvent(Event) : void
+        getTopics() : List<EventType>
+    }
+}
+
+Common.data -[hidden]d- Common.services
+Event -[hidden]d- EventBroker
+Event *-- EventType: "has a "
+
+
+component Asteroid {
+
+    class AsteroidControlSystem implements Common.services.IObserver{
+        reacts to COLLISION event
+        publishes NEW_LEVEL event
+    }
+}
+
+AsteroidControlSystem --> EventBroker
+
+component Bullet {
+    class BulletControlSystem implements Common.services.IObserver{
+        reacts to COLLISION event
+        publishes SCORE_INCREMENT event
+    }
+}
+
+BulletControlSystem -> EventBroker
+
+component Debris {
+    class DebrisControlSystem implements Common.services.IObserver{
+        reacts to COLLISION event
+    }
+}
+
+component Enemy {
+    class EnemyControlSystem implements Common.services.IObserver{
+        reacts to COLLISION event
+        publishes SCORE_INCREMENT event
+    }
+}
+
+EnemyControlSystem -> EventBroker
+
+component Map {
+    class MapControlSystem implements Common.services.IObserver{
+        reacts to NEW_LEVEL event
+    }
+}
+
+component Player {
+    class PlayerControlSystem implements Common.services.IObserver{
+        reacts to COLLISION event
+    }
+}
+
+component ScoreService {
+    class ScoreService implements Common.services.IObserver{
+        reacts to SCORE_INCREMENT, NEW_LEVEL event
+    }
+}
+
+component Collision {
+    class CollisionControlSystem {
+        publishes COLLISION event
+    }
+}
+
+CollisionControlSystem -> EventBroker
+
+
+
+
+
+
+@enduml
+
