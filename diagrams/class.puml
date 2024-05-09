@@ -6,8 +6,8 @@ end title
 legend top
 <font color=red >Note</font>
 All components rely on the Common component, which is why this relationship is not showed.
-Interfaces and Classes from the Common component are also duplicated in the components that implement/extend them.
-This is to improve clarity and emphasize important relationships.
+Some Interfaces and Classes from the Common component are also duplicated in the components that implement/extend them.
+This is to improve clarity and emphasize important relationships since Common is more a library.
 end legend
 
 skinparam defaultTextAlignment center
@@ -361,7 +361,7 @@ component Enemy {
 }
 
 component EntityStylingService {
-    class EntityStylingServiceImpl implements IEntityStylingService {
+    class EntityStylingServiceImpl implements Common.services.IEntityStylingService {
         + styleEntity(Entity, Polygon): void
         - setPolygonStylingByInstance(Entity, Polygon): void
         - setEntityWidthAndHeightByPolygon(Entity, Polygon): void
@@ -469,5 +469,5 @@ Map --> CommonPlayer.PlayerSPI : uses
 Map --> CommonAsteroid.AsteroidSPI : uses
 UIRenderingService --> CommonScoreService.IScoreService : uses
 
-
+Collision --> Common.data.EventBroker : publishes
 @enduml
