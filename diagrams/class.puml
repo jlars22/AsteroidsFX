@@ -5,7 +5,7 @@ end title
 
 legend top
 <font color=red >Note</font>
-All components rely on the Common component, which is why this relationship is not showed.
+All components use the Common component, which is why this relationship is not showed.
 Some Interfaces and Classes from the Common component are also duplicated in the components that implement/extend them.
 This is to improve clarity and emphasize important relationships since Common is more a library.
 end legend
