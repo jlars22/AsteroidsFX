@@ -1,5 +1,5 @@
 @startuml
-title CollisionControlSystem (Collision Detected) - Sequence Diagram
+title Collision Detection - Sequence Diagram
 participant Main
 participant IPostEntityProcessingService
 participant CollisionControlSystem
@@ -11,19 +11,27 @@ Main -> IPostEntityProcessingService: process(GameData, World)
 activate IPostEntityProcessingService
 IPostEntityProcessingService -> CollisionControlSystem: process(GameData, World)
 activate CollisionControlSystem
-CollisionControlSystem -> CollisionControlSystem: checkCollision(Entity, Entity)
-    note right of CollisionControlSystem: if the result of checkCollision is true,\npublish the collision event, else do nothing
-alt checkCollision(Entity, Entity) is true
-    CollisionControlSystem -> EventBroker: publish(EntityA, EntityB, EventType.COLLISION, World, GameData)
-    activate EventBroker
-    loop for each observer.get(EventType.COLLISION)
-        EventBroker -> Observer: onEvent(Event)
-        activate Observer
-        Observer --> EventBroker: void
-        deactivate Observer
+loop for each entityA in world.getEntities()
+    loop for each entityB in world.getEntities()
+        CollisionControlSystem -> CollisionControlSystem: entityA.getID().equals(entityB.getID())
+        alt entityA.getID().equals(entityB.getID()) is false
+        note right of CollisionControlSystem: if the entities have same id, we have selected the same entity twice,\nso we skip the iteration
+            CollisionControlSystem -> CollisionControlSystem: checkCollision(Entity, Entity)
+            note right of CollisionControlSystem: if the result of checkCollision is true,\npublish the collision event, else do nothing
+            alt checkCollision(Entity, Entity) is true
+                CollisionControlSystem -> EventBroker: publish(EntityA, EntityB, EventType.COLLISION, World, GameData)
+                activate EventBroker
+                loop for each observer.get(EventType.COLLISION)
+                    EventBroker -> Observer: onEvent(Event)
+                    activate Observer
+                    Observer --> EventBroker: void
+                    deactivate Observer
+                end
+                EventBroker --> CollisionControlSystem: void
+                deactivate EventBroker
+            end
+        end
     end
-    EventBroker --> CollisionControlSystem: void
-    deactivate EventBroker
 end
 CollisionControlSystem --> IPostEntityProcessingService: void
 deactivate CollisionControlSystem

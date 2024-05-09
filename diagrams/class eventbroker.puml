@@ -1,5 +1,4 @@
 @startuml
-@startuml
 title
 <u>AsteroidsFX - EventBroker Class Diagram</u>
 end title
@@ -124,11 +123,5 @@ component Collision {
 }
 
 CollisionControlSystem -> EventBroker
-
-
-
-
-
-
 @enduml
 

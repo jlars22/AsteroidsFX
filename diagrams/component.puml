@@ -3,106 +3,74 @@ title
 <u>AsteroidsFX - Component Diagram</u>
 end title
 
-legend top
-<font color=red >Note</font>
-<i>Blue</i> components are those who are shared and meant to be used by any other component.
-<i>Green</i> component is the core/main component.
-end legend
+left to right direction
 
-skinparam linetype ortho
 skinparam component {
     FontName Arial
     FontSize 16
     FontStyle Bold
 }
 
+component [\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCore\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n] as Core #Lightgreen
 
 together {
-    component [Asteroid]
-    component [Bullet]
-    component [Debris]
-    component [Collision]
-    component [Enemy]
-    component [Weapon]
-    component [Map]
-    component [ScoreService]
-    component [Player]
-    component [UIRenderingService]
-    component [EntityStylingService]
+    component [Asteroid] #Lightgreen
+    component [Bullet] #Lightgreen
+    component [Debris] #Lightgreen
+    component [Collision] #Lightgreen
+    component [Enemy] #Lightgreen
+    component [Weapon] #Lightgreen
+    component [Map] #Lightgreen
+    component [ScoreService] #Lightgreen
+    component [Player] #Lightgreen
+    component [UIRenderingService] #Lightgreen
+    component [EntityStylingService] #Lightgreen
 }
 
 together {
-    component [CommonWeapon] #Lightblue
-    component [Common] #Lightblue
-    component [CommonAsteroid] #Lightblue
-    component [CommonBullet] #Lightblue
-    component [CommonEnemy] #Lightblue
-    component [CommonScoreService] #Lightblue
-    component [CommonPlayer] #Lightblue
+    component [CommonBullet] #Lightcoral
+    component [CommonWeapon] #Lightcoral
+    component [CommonAsteroid] #Lightcoral
+    component [CommonScoreService] #Lightcoral
+    component [CommonEnemy] #Lightcoral
+    component [CommonPlayer] #Lightcoral
 }
 
-component [Core] #Lightgreen
-
-'Asteroid'
-[Asteroid] -(0- [CommonAsteroid]
-
-'Bullet'
-[Bullet] -(0- [CommonBullet]
-
-'Collision'
-[Collision] -(0-- [Common]
-
-'CommonAsteroid'
-[CommonAsteroid] --(0-- [Common]
-
-'CommonBullet'
-[CommonBullet] --(0-- [Common]
-
-'CommonEnemy'
-[CommonEnemy] --(0-- [Common]
+component [Common] #Khaki
 
 
-'CommonPlayer'
-[CommonPlayer] --(0-- [Common]
+Core ..> Common
+CommonEnemy ...> Common
+CommonScoreService ...> Common
+CommonPlayer ...> Common
+CommonBullet ...> Common
+CommonWeapon ...> Common
+CommonAsteroid ...> Common
 
-'CommonScoreService'
-[CommonScoreService] --(0-- [Common]
+Enemy ..> CommonEnemy
+Enemy ...> CommonWeapon
+Weapon ..> CommonWeapon
+ScoreService ..> CommonScoreService
+Player ..> CommonPlayer
+Bullet ..> CommonBullet
 
-'CommonWeapon'
-[CommonWeapon] --(0-- [Common]
+Core ------(0- Enemy : IGamePluginService\nIEntityProcessingService\nIObserver
+Core ---(0- Map : IGamePluginService\nIObserver
+Core ---(0- Asteroid : IGamePluginService\nIEntityProcessingService\nIObserver
+Core ---(0- Bullet : IGamePluginService\nIEntityProcessingService\nIObserver
+Core ---(0- Player : IGamePluginService\nIEntityProcessingService\nIObserver
+Core ---(0- Debris : IEntityProcessingService\nIObserver
+Core ---(0- ScoreService : IObserver
+Core ---(0- EntityStylingService : IEntityStylingService
+Core ---(0- Collision : IPostEntityProcessingService
+Core ---(0---- UIRenderingService : IUIRenderingService
 
-'Core'
-[Core] --(0-- [Common]
+Enemy -0)- Map : EnemySPI
+Player -0)- Map : PlayerSPI
+Asteroid -0)- Map : AsteroidSPI
+Weapon -0)- Enemy : WeaponSPI
+Weapon -0)- Player : WeaponSPI
+Bullet -0)- Weapon : BulletSPI
 
-'Debris'
-[Debris] -(0-- [Common]
-
-'Enemy'
-[Enemy] -(0- [CommonEnemy]
-[Enemy] -(0- [CommonWeapon]
-
-
-'Map'
-[Map] -(0- [CommonAsteroid]
-[Map] -(0- [CommonPlayer]
-[Map] -(0- [CommonEnemy]
-
-'Player'
-[Player] -(0- [CommonWeapon]
-[Player] -(0- [CommonPlayer]
-
-
-'ScoreService'
-[ScoreService] -(0- [CommonScoreService]
-
-'UIRenderingService'
-[UIRenderingService] -(0- [CommonScoreService]
-
-'EntityStylingService'
-[EntityStylingService] -(0- [Common]
-
-'Weapon'
-[Weapon] -(0- [CommonWeapon]
-[Weapon] -(0- [CommonBullet]
 
 @enduml
