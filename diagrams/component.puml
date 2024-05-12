@@ -1,27 +1,18 @@
 @startuml
-title
-<u>AsteroidsFX - Component Diagram</u>
-end title
-
-legend top
-<font color=red>Note</font>
-The colors are meant to reflect those from the Clean Architecture diagram.
-
-Yellow is Entities
-Red is Use Cases
-Green is Controllers
-end legend
-
 skinparam defaultTextAlignment center
-
 
 left to right direction
 
 skinparam component {
     FontName Arial
+    FontSize 18
+    FontStyle Bold
+    BorderThickness 1
+}
+
+skinparam arrow {
     FontSize 16
     FontStyle Bold
-    BorderThickness 2
 }
 
 component [<<Component>>\nCore] as Core #Lightgreen

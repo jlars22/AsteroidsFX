@@ -1,6 +1,4 @@
 @startuml
-title Player Presses Space To Shoot - Sequence Diagram
-
 participant Main
 participant IEntityProcessingService
 participant PlayerControlSystem
