@@ -1,14 +1,5 @@
 @startuml
-title
-<u>AsteroidsFX - EventBroker Class Diagram</u>
-end title
-
-legend top
-<font color=red >Note</font>
-This diagram is to show how components use the EventBroker located in the Common component.
-
-Therefore all non related is hidden.
-end legend
+left to right direction
 
 skinparam defaultTextAlignment center
 hide empty members
