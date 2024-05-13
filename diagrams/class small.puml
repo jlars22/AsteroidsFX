@@ -1,0 +1,154 @@
+@startuml
+hide empty members
+
+component CommonBullet {
+    class Bullet {
+        - double distanceTravelled
+        - Entity owner
+
+        + getDistanceTravelled() : double
+        + setDistanceTravelled(double) : void
+        + getMaxTravelDistance() : double
+        + getOwner() : Entity
+        + setOwner(Entity owner) : void
+    }
+
+    interface BulletSPI {
+        createBullet(Entity, double) : Entity
+    }
+}
+
+component CommonEnemy {
+    class Enemy {
+        - LocalTime lastTimeFired
+        - LocalTime lastTimeChangedDirection
+
+        + getLastTimeFired() : LocalTime
+        + setLastTimeFired(LocalTime) : void
+        + getLastTimeChangedDirection() : LocalTime
+        + setLastTimeChangedDirection(LocalTime) : void
+    }
+
+    interface EnemySPI {
+        resetEnemyPosition(GameData, World) : void
+    }
+}
+
+component CommonPlayer {
+    class Player {
+        - LocalTime respawnTime
+
+        + getRespawnTime() : LocalTime
+        + setRespawnTime(LocalTime) : void
+    }
+
+    interface PlayerSPI {
+        resetPlayerPosition(GameData, World) : void
+    }
+}
+
+
+
+component CommonWeapon {
+    interface WeaponSPI {
+        shoot(Entity, World) : void
+    }
+}
+
+
+component Bullet {
+    class BulletControlSystem {
+        - int BULLET_SPEED
+        - EventBroker eventBroker
+
+        + process(GameData, World): void
+        + onEvent(Event): void
+        + getTopics(): List<EventType>
+        - handleTravel( World, Bullet): void
+        - handleBorders(GameData, Bullet): void
+        - handleBulletCollision(Entity, Entity, Event): void
+    }
+
+    class BulletPlugin implements CommonBullet.BulletSPI {
+        + start(GameData, World): void
+        + stop(GameData, World): void
+        + createBullet(Entity, double): Entity
+    }
+}
+
+
+
+component Enemy {
+    class EnemyControlSystem implements CommonEnemy.EnemySPI {
+        - Random random
+        - EventBroker eventBroker
+
+        + process(GameData, World): void
+        + onEvent(Event): void
+        + getTopics(): List<EventType>
+        + resetEnemyPosition(GameData, World): void
+        - handleRespawn(GameData, World) : void
+        - handleBorders(GameData, Enemy): void
+        - startMovement(Enemy) : void
+        - getNewDirection(Enemy) : double
+        - shouldChangeDirection(Enemy) : boolean
+        - startFiring(World, Enemy) : void
+        - createEnemyShip(GameData) : Enemy
+        - setRandomPosition(GameData, Enemy) : void
+        - getWeaponSPIs() : Collection<? extends WeaponSPI>
+    }
+
+    class EnemyPlugin {
+        - Entity enemy
+
+        + start(GameData, World): void
+        + stop(GameData, World): void
+
+    }
+}
+
+component Player {
+    class PlayerControlSystem implements CommonPlayer.PlayerSPI {
+        + process(GameData, World): void
+        + onEvent(Event): void
+        + getTopics(): List<EventType>
+        + resetPlayerPosition(GameData, World): void
+        - respawnPlayer(GameData, World): void
+        - handleInput(GameData, World, Entity): void
+        - applyAcceleration(Entity, double) : void
+        - updatePosition(Entity) : void
+        - handleBorders(GameData, Entity) : void
+        - fireBullet(World, Entity) : void
+        - getWeaponSPIs() : Collection<? extends WeaponSPI>
+    }
+
+    class PlayerPlugin {
+
+        + start(GameData, World): void
+        + stop(GameData, World): void
+        - createPlayerShip(GameData): Entity
+    }
+}
+
+
+
+
+component Weapon {
+    class WeaponPlugin implements CommonWeapon.WeaponSPI {
+        + start(GameData, World): void
+        + stop(GameData, World): void
+        + shoot(Entity, World) : void
+        - getBulletSPIs() : Collection<? extends BulletSPI>
+    }
+}
+
+CommonBullet -[hidden]d- Bullet
+CommonWeapon -[hidden]d- Weapon
+CommonEnemy -[hidden]d- Enemy
+CommonPlayer -[hidden]d- Player
+
+Weapon --> CommonBullet.BulletSPI : uses
+Enemy --> CommonWeapon.WeaponSPI : uses
+Player --> CommonWeapon.WeaponSPI : uses
+
+@enduml
