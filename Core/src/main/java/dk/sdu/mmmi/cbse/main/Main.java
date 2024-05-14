@@ -1,7 +1,5 @@
 package dk.sdu.mmmi.cbse.main;
 
-import static java.util.stream.Collectors.toList;
-
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.EventBroker;
 import dk.sdu.mmmi.cbse.common.data.GameData;
@@ -14,8 +12,8 @@ import dk.sdu.mmmi.cbse.common.services.IObserver;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IUIRenderingService;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -166,33 +164,29 @@ public class Main extends Application {
 	}
 
 	private void loadObservers() {
-		ServiceLoader<IObserver> loader = ServiceLoader.load(IObserver.class);
-		for (IObserver observer : loader) {
+		List<IObserver> observers = ServiceLocator.getInstance(IObserver.class).getServices();
+		for (IObserver observer : observers) {
 			eventBroker.addObserver(observer.getTopics(), observer);
 		}
 	}
 
 	private Collection<? extends IGamePluginService> getPluginServices() {
-		return ServiceLoader.load(IGamePluginService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+		return ServiceLocator.getInstance(IGamePluginService.class).getServices();
 	}
 
 	private Collection<? extends IEntityProcessingService> getEntityProcessingServices() {
-		return ServiceLoader.load(IEntityProcessingService.class).stream().map(ServiceLoader.Provider::get)
-				.collect(toList());
+		return ServiceLocator.getInstance(IEntityProcessingService.class).getServices();
 	}
 
 	private Collection<? extends IPostEntityProcessingService> getPostEntityProcessingServices() {
-		return ServiceLoader.load(IPostEntityProcessingService.class).stream().map(ServiceLoader.Provider::get)
-				.collect(toList());
+		return ServiceLocator.getInstance(IPostEntityProcessingService.class).getServices();
 	}
 
 	private Collection<? extends IUIRenderingService> getUIRenderingServices() {
-		return ServiceLoader.load(IUIRenderingService.class).stream().map(ServiceLoader.Provider::get)
-				.collect(toList());
+		return ServiceLocator.getInstance(IUIRenderingService.class).getServices();
 	}
 
 	private Collection<? extends IEntityStylingService> getEntityStylingServices() {
-		return ServiceLoader.load(IEntityStylingService.class).stream().map(ServiceLoader.Provider::get)
-				.collect(toList());
+		return ServiceLocator.getInstance(IEntityStylingService.class).getServices();
 	}
 }
