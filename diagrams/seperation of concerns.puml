@@ -1,0 +1,16 @@
+@startuml
+hide empty members
+component CommonAsteroid {
+    class Asteroid
+    note right of Asteroid : Defines the object
+    interface AsteroidSPI
+}
+
+component Asteroid {
+    class AsteroidControlSystem
+    class AsteroidPlugin implements CommonAsteroid.AsteroidSPI
+}
+
+AsteroidControlSystem --> CommonAsteroid.Asteroid : controls
+AsteroidPlugin --> CommonAsteroid.Asteroid : makes
+@enduml
